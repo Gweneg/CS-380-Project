@@ -21,9 +21,9 @@ public class PlayerMovement : MonoBehaviour
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
         //flips the sprite based on if walking left or right
         if(horizontalInput > 0.01f){
-            transform.localScale = new Vector3(.5f, .5f, .5f);
+            transform.localScale = new Vector3(.25f, .25f, .25f);
         } else if(horizontalInput < -0.01f){
-            transform.localScale = new Vector3(-.5f, .5f, .5f);
+            transform.localScale = new Vector3(-.25f, .25f, .25f);
         }
         //Checks for a space bar input and if our player is standing on a ground for a jump action
         if(Input.GetKey(KeyCode.Space) && grounded){
