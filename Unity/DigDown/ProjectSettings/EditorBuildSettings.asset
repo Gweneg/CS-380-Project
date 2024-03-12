@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Mines.unity
     guid: 70bff82470b07db44acfe3870b7dacd4
   - enabled: 1
+    path: Assets/Scenes/Options Menu.unity
+    guid: ce46fe5bd952a9c47a18cad91d92ca01
+  - enabled: 1
     path: Assets/Scenes/Dead screen.unity
     guid: 769e0a0560d8d9546af6191673908d53
   - enabled: 1
