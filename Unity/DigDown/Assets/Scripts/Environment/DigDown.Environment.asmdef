@@ -1,0 +1,17 @@
+{
+    "name": "DigDown.Environment",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4c7b45e4d33803649a03186b917caf3d",
+        "GUID:d62a89c48c692d44cb16a009954b8f5a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

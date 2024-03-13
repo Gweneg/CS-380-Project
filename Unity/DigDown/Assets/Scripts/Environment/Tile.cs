@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Resources;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,10 +12,10 @@ namespace Environment
 	[Serializable]
 	public struct TileType
 	{
-		public TileType(ushort typeID, ushort textureID, byte durabilityMax, float durabilityHardness, bool isSolid)
+		public TileType(ushort typeID, ushort spriteID, byte durabilityMax, float durabilityHardness, bool isSolid)
 		{
 			this.typeID = typeID;
-			this.textureID = textureID;
+			this.spriteID = spriteID;
 			this.durabilityMax = durabilityMax;
 			this.durabilityHardness = durabilityHardness;
 			this.isSolid = isSolid;
@@ -30,7 +29,8 @@ namespace Environment
 		/// <summary>
 		/// The ID of the tile's texture.
 		/// </summary>
-		public ushort textureID;
+		[FormerlySerializedAs("textureID")]
+		public ushort spriteID;
 		
 		/// <summary>
 		/// The maximum/initial tile durability (health).
@@ -146,6 +146,12 @@ namespace Environment
 			renderer.sprite = sprite;
 			// Update the collider.
 			collider.enabled = isSolid;
+		}
+
+		private void Awake()
+		{
+			renderer = GetComponent<SpriteRenderer>();
+			collider = GetComponent<Collider2D>();
 		}
 	}
 }
