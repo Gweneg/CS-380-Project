@@ -21,20 +21,20 @@ public class HealthBehaviour : MonoBehaviour{
         }
 
         if(Input.GetKeyDown(KeyCode.Return)){
-            takeDamage(20);
+            TakeDamage(20);
         }
 
         if(Input.GetKeyDown(KeyCode.Space)){
-            heal(5);
+            Heal(5);
         }
     }
     
-    public void takeDamage(float damage){
+    public void TakeDamage(float damage){
         totalHealth -= damage;
         health.fillAmount = totalHealth/100f;
     }
 
-    public void heal(float healTotal){
+    public void Heal(float healTotal){
         totalHealth += healTotal;
         totalHealth = Mathf.Clamp(healTotal,0,100);
         health.fillAmount = totalHealth/100f;
