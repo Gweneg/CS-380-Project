@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuOptions : MonoBehaviour{
+    public void Start(){
+        Time.timeScale = 1;
+        //Set Volume level
+    }
     public void LoadGame(){
         SceneManager.LoadSceneAsync("Mines");
     }
