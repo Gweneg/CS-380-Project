@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Walk Shoot
+  m_Name: Walking with Shotgun
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -25,15 +25,7 @@ AnimationClip:
     - time: 0.21666667
       value: {fileID: 21300000, guid: d9cfa87a9443e453d8d325dfc207c03b, type: 3}
     - time: 0.41666666
-      value: {fileID: 21300000, guid: 81980d5838c484ffe86412e652282701, type: 3}
-    - time: 0.6333333
-      value: {fileID: 21300000, guid: ed402a6167e3841b2b2651d4b308fa9e, type: 3}
-    - time: 0.8333333
-      value: {fileID: 21300000, guid: 1169c4fad3d2f4200ba0c69529764854, type: 3}
-    - time: 1.05
-      value: {fileID: 21300000, guid: 2e81c8b292f27462fa776afed29fe0a0, type: 3}
-    - time: 1.25
-      value: {fileID: 21300000, guid: 6f703d1b8171d499789a0a337930d6c0, type: 3}
+      value: {fileID: 21300000, guid: 03c83a650d27d47cc8e09205550948bf, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -58,17 +50,13 @@ AnimationClip:
     pptrCurveMapping:
     - {fileID: 21300000, guid: 03c83a650d27d47cc8e09205550948bf, type: 3}
     - {fileID: 21300000, guid: d9cfa87a9443e453d8d325dfc207c03b, type: 3}
-    - {fileID: 21300000, guid: 81980d5838c484ffe86412e652282701, type: 3}
-    - {fileID: 21300000, guid: ed402a6167e3841b2b2651d4b308fa9e, type: 3}
-    - {fileID: 21300000, guid: 1169c4fad3d2f4200ba0c69529764854, type: 3}
-    - {fileID: 21300000, guid: 2e81c8b292f27462fa776afed29fe0a0, type: 3}
-    - {fileID: 21300000, guid: 6f703d1b8171d499789a0a337930d6c0, type: 3}
+    - {fileID: 21300000, guid: 03c83a650d27d47cc8e09205550948bf, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.2666667
+    m_StopTime: 0.43333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
