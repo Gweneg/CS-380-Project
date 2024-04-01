@@ -12,4 +12,7 @@ public class LoadScene : MonoBehaviour{
     public void loadMenu(){
         SceneManager.LoadSceneAsync("Main Menu");
     }
+
+    //Optional: Make method displaying score
+    //Optional: Make Leaderboard displaying highscore
 }

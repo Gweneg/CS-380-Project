@@ -8,10 +8,10 @@ using UnityEngine.SceneManagement;
 public class HealthBehaviour : MonoBehaviour{
     // Start is called before the first frame update
     public Image health;
-    public float totalHealth = 100f;
-    void Start()
-    {
-        
+    public float totalHealth;
+    void Start(){
+        // Score and health has to reset
+        totalHealth = 100f;
     }
 
     // Update is called once per frame
@@ -39,4 +39,7 @@ public class HealthBehaviour : MonoBehaviour{
         totalHealth = Mathf.Clamp(healTotal,0,100);
         health.fillAmount = totalHealth/100f;
     }
+
+    //Optional: Make method displaying score in game
+    //Optional: make method that tallys up points depending on enemies killed or items collected
 }

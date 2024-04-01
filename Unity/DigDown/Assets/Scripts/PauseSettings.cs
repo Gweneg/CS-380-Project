@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseSettings : MonoBehaviour{
-    public SettingsMenu settingsMenuInstance;
     public void ResumeGame(){
         Time.timeScale = 1;
         SceneManager.LoadSceneAsync("Mines");
@@ -17,6 +16,5 @@ public class PauseSettings : MonoBehaviour{
 
     public void Settings(){
         SceneManager.LoadSceneAsync("Options Menu");
-        settingsMenuInstance.SetPrevScene("Pause Menu");
     }
 }
