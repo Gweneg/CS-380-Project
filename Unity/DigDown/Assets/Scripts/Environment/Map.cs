@@ -16,7 +16,7 @@ namespace Environment
 		/// <summary>
 		/// The full-size (size measured between opposite edges) of tiles in the scene (width & height).
 		/// </summary>
-		public const float TileSize = 0.25f;
+		public const float TileSize = 1f;
 		/// <summary>
 		/// The half-size (size measured from the center to the edge) of tiles in the scene (width & height).
 		/// </summary>
@@ -37,16 +37,16 @@ namespace Environment
 		public static readonly Dictionary<int, TileType> TileTypes =
 			new()
 		{
-			{255, new TileType(typeID: 0, spriteID: 0, durabilityMax: 0, durabilityHardness: 1, isSolid: false)},	  // Air.
-			{0, new TileType(typeID: 1, spriteID: 1, durabilityMax: 1, durabilityHardness: 1, isSolid: true)},        // Grass (to Dirt).
-			{1, new TileType(typeID: 2, spriteID: 2, durabilityMax: 2, durabilityHardness: 255/20, isSolid: true)},   // Dirt.
-			{2, new TileType(typeID: 3, spriteID: 3, durabilityMax: 4, durabilityHardness: 255/8, isSolid: true)},    // Dirt to Dirter.
-			{3, new TileType(typeID: 4, spriteID: 4, durabilityMax: 6, durabilityHardness: 255/4, isSolid: true)},    // Dirter.
-			{4, new TileType(typeID: 5, spriteID: 5, durabilityMax: 8, durabilityHardness: 255/8*3, isSolid: true)},  // Dirter to Dirtest.
-			{5, new TileType(typeID: 6, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
-			{6, new TileType(typeID: 7, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
-			{7, new TileType(typeID: 8, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
-			{8, new TileType(typeID: 9, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)}       // Void.
+			{255, new TileType(typeID: 255, spriteID: 0, durabilityMax: 0, durabilityHardness: 1, isSolid: false)},	  // Air.
+			{0, new TileType(typeID: 0, spriteID: 1, durabilityMax: 1, durabilityHardness: 1, isSolid: true)},        // Grass (to Dirt).
+			{1, new TileType(typeID: 1, spriteID: 2, durabilityMax: 2, durabilityHardness: 255/20, isSolid: true)},   // Dirt.
+			{2, new TileType(typeID: 2, spriteID: 3, durabilityMax: 4, durabilityHardness: 255/8, isSolid: true)},    // Dirt to Dirter.
+			{3, new TileType(typeID: 3, spriteID: 4, durabilityMax: 6, durabilityHardness: 255/4, isSolid: true)},    // Dirter.
+			{4, new TileType(typeID: 4, spriteID: 5, durabilityMax: 8, durabilityHardness: 255/8*3, isSolid: true)},  // Dirter to Dirtest.
+			{5, new TileType(typeID: 5, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
+			{6, new TileType(typeID: 6, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
+			{7, new TileType(typeID: 7, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
+			{8, new TileType(typeID: 8, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)}       // Void.
 		};
 		/// <summary>
 		/// The instances of tiles for the current map.
@@ -90,7 +90,6 @@ namespace Environment
 
 		
 		// FUNCTIONS - VIEWPORT
-
 		/// <summary>
 		/// Adjusts the tile GameObjects in-scene to reflect the underlying map.
 		/// Pools ones that are no longer visible, allocates now-visible ones.
@@ -325,9 +324,35 @@ namespace Environment
 			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
 			                                                     .Select(tileType => new TileInstance(tileType.Value))
 			                                                     .ToDictionary(tileInstance => tileInstance.TypeID);
-
+			
+			// 1. Get the type from the ID
+			TileType newTilesType = TileTypes[1];
+			// 2. Create the tile from the type
+			TileInstance newTileA = new TileInstance(newTilesType);
+			
+			// (1 + 2 Combined)
+			TileInstance newTileB = tileInstanceCopies[1];
+			
+			// 3. Set the tile in the world
+			InstanceTiles[0, 0].Set(newTileB);
+			
+			
 			// Todo: Tidy this up
-			// Do basic world gen.
+			// Loops over the entire world (starting at bottom left, sweeping all the way to the right, then moving up one block)
+			for (int row = 0; row < MapHeight; row++)
+			{
+				// Choose tile type here
+				long tileID = 0;
+
+				for (int column = 0; column < MapWidth; column++)
+				{
+					// Sets the tile to the type chosen above
+					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
+				}
+			}
+			
+			
+			// Todo: Placeholder, replace?
 			long mapLayerSize = MapHeight / 4;
 			for (int row = 0; row < MapHeight; row++)
 			{
@@ -343,6 +368,7 @@ namespace Environment
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
 				}
 			}
+			
 
 			// Todo: Perform generation
 			// Todo: Perform point-of-interest (caves, loot, etc.) generation
@@ -449,11 +475,13 @@ namespace Environment
 		// METHODS - UNITY
 		private void Start()
 		{
-			ConfigureMap(2000, 80);
-			ConfigureRenderTiles(48, 27);
+			ConfigureMap(200, 16);
+			ConfigureRenderTiles(16, 9);
 			GenerateMap();
 			MoveMap(Vector2.zero);
 			RerenderObjectTiles();
+			
+			
 			
 			Debug.Log($"Map size: {MapWidth}, {MapHeight}");
 		}
