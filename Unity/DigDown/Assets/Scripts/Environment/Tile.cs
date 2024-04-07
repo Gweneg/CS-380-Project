@@ -12,7 +12,7 @@ namespace Environment
 	[Serializable]
 	public struct TileType
 	{
-		public TileType(ushort typeID, ushort spriteID, byte durabilityMax, float durabilityHardness, bool isSolid)
+		public TileType(ushort typeID, ushort spriteID, byte durabilityMax, byte durabilityHardness, bool isSolid)
 		{
 			this.typeID = typeID;
 			this.spriteID = spriteID;
@@ -29,7 +29,6 @@ namespace Environment
 		/// <summary>
 		/// The ID of the tile's texture.
 		/// </summary>
-		[FormerlySerializedAs("textureID")]
 		public ushort spriteID;
 		
 		/// <summary>
@@ -39,7 +38,7 @@ namespace Environment
 		/// <summary>
 		/// The hardness modifier of this tile's durability.
 		/// </summary>
-		public float durabilityHardness;
+		public byte durabilityHardness;
 
 		/// <summary>
 		/// Whether the tile can be stood on or not.
@@ -59,23 +58,15 @@ namespace Environment
 		public TileInstance(TileType type)
 		{
 			this.TypeID = type.typeID;
-			this.DurabilityRemaining = type.durabilityMax;
-			this.DurabilityHardness = type.durabilityHardness;
 			this.IsSolid = type.isSolid;
-			this.PositionX = 0;
-			this.PositionY = 0;
 		}
 		/// <summary>
 		/// Creates a tile instance using the given instance.
 		/// </summary>
 		/// <param name="instance">The instance to create from.</param>
-		/// <param name="x">The x-coordinate to create this tile at.</param>
-		/// <param name="y">The y-coordinate to create tis tile at.</param>
-		public TileInstance(TileInstance instance, ushort x, ushort y)
+		public TileInstance(TileInstance instance)
 		{
 			this = instance;
-			this.PositionX = x;
-			this.PositionY = y;
 		}
 		
 		/// <summary>
@@ -83,24 +74,6 @@ namespace Environment
 		/// </summary>
 		public ushort TypeID;
 		
-		/// <summary>
-		/// The X-position (coordinate) of this tile. Relative to the map array, such that 0 is the left of the map.
-		/// </summary>
-		public ushort PositionX;
-		/// <summary>
-		/// The Y-position (coordinate) of this tile. Relative to the map array, such that 0 is the bottom of the map.
-		/// </summary>
-		public ushort PositionY;
-		
-		/// <summary>
-		/// The remaining durability of this tile.
-		/// </summary>
-		public byte DurabilityRemaining;
-		/// <summary>
-		/// The damage reduction modifier of this tile.
-		/// Final damage equals tool damage divided by the tile hardness minus the tool hardness.
-		/// </summary>
-		public float DurabilityHardness;
 		/// <summary>
 		/// Whether this tile is solid or not (can be passed through).
 		/// </summary>
@@ -141,7 +114,7 @@ namespace Environment
 			// Cache the transform for tiny performance gains.
 			Transform localTransform = transform;
 			// Update the size/scale of the transform.
-			localTransform.localPosition = localTransform.InverseTransformPoint(position);
+			localTransform.position = new Vector3(position.x, position.y, localTransform.position.z);
 			// Update the sprite.
 			renderer.sprite = sprite;
 			// Update the collider.

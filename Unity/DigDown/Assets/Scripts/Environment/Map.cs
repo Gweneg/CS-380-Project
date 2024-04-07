@@ -16,7 +16,7 @@ namespace Environment
 		/// <summary>
 		/// The full-size (size measured between opposite edges) of tiles in the scene (width & height).
 		/// </summary>
-		public const float TileSize = 1f;
+		public const float TileSize = 0.25f;
 		/// <summary>
 		/// The half-size (size measured from the center to the edge) of tiles in the scene (width & height).
 		/// </summary>
@@ -34,17 +34,19 @@ namespace Environment
 		/// <summary>
 		/// The different types tiles could be.
 		/// </summary>
-		public static readonly TileType[] TileTypes =
+		public static readonly Dictionary<int, TileType> TileTypes =
+			new()
 		{
-			new(typeID: 0, spriteID: 0, durabilityMax: 1, durabilityHardness: 0.0f, isSolid: true),   // Grass (to Dirt).
-			new(typeID: 1, spriteID: 1, durabilityMax: 2, durabilityHardness: 0.1f, isSolid: true),   // Dirt.
-			new(typeID: 2, spriteID: 2, durabilityMax: 4, durabilityHardness: 0.25f, isSolid: true),  // Dirt to Dirter.
-			new(typeID: 3, spriteID: 3, durabilityMax: 6, durabilityHardness: 0.5f, isSolid: true),   // Dirter.
-			new(typeID: 4, spriteID: 4, durabilityMax: 8, durabilityHardness: 0.75f, isSolid: true),  // Dirter to Dirtest.
-			new(typeID: 5, spriteID: 5, durabilityMax: 12, durabilityHardness: 1.25f, isSolid: true), // Dirtest.
-			new(typeID: 6, spriteID: 6, durabilityMax: 14, durabilityHardness: 1.75f, isSolid: true), // Dirtest to Stone.
-			new(typeID: 7, spriteID: 7, durabilityMax: 20, durabilityHardness: 2.0f, isSolid: true),  // Stone.
-			new(typeID: 8, spriteID: 8, durabilityMax: 255, durabilityHardness: -1, isSolid: true)    // Void.
+			{255, new TileType(typeID: 0, spriteID: 0, durabilityMax: 0, durabilityHardness: 1, isSolid: false)},	  // Air.
+			{0, new TileType(typeID: 1, spriteID: 1, durabilityMax: 1, durabilityHardness: 1, isSolid: true)},        // Grass (to Dirt).
+			{1, new TileType(typeID: 2, spriteID: 2, durabilityMax: 2, durabilityHardness: 255/20, isSolid: true)},   // Dirt.
+			{2, new TileType(typeID: 3, spriteID: 3, durabilityMax: 4, durabilityHardness: 255/8, isSolid: true)},    // Dirt to Dirter.
+			{3, new TileType(typeID: 4, spriteID: 4, durabilityMax: 6, durabilityHardness: 255/4, isSolid: true)},    // Dirter.
+			{4, new TileType(typeID: 5, spriteID: 5, durabilityMax: 8, durabilityHardness: 255/8*3, isSolid: true)},  // Dirter to Dirtest.
+			{5, new TileType(typeID: 6, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
+			{6, new TileType(typeID: 7, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
+			{7, new TileType(typeID: 8, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
+			{8, new TileType(typeID: 9, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)}       // Void.
 		};
 		/// <summary>
 		/// The instances of tiles for the current map.
@@ -89,29 +91,51 @@ namespace Environment
 		
 		// FUNCTIONS - VIEWPORT
 
-		
 		/// <summary>
 		/// Adjusts the tile GameObjects in-scene to reflect the underlying map.
 		/// Pools ones that are no longer visible, allocates now-visible ones.
+		/// Note: The coordinates of the new corner position will be clamped to be within the true map dimensions.
 		/// </summary>
-		/// <param name="newBottomLeftCorner">The bottom-left coordinate of the render window.</param>
-		public void AdjustObjectTiles((uint, uint) newBottomLeftCorner)
+		/// <param name="offset">Direction/amount to move the render window.</param>
+		public void MoveRenderArea((long, long) offset)
+		{
+			// Unbox the offset X & Y.
+			(long offsetX, long offsetY) = offset;
+			// Cache the old lower-left coordinates of the render window.
+			(long cornerX, long cornerY) = _renderCorner;
+			// Cache the render dimensions
+			(long renderWidth, long renderHeight) = _renderSize;
+			
+			// Clamp the offset to not over/underflow.
+			uint newCoordinateX = (uint) Math.Clamp(offsetX + cornerX, 0, MapWidth - renderWidth);
+			uint newCoordinateY = (uint) Math.Clamp(offsetY + cornerY, 0, MapHeight - renderHeight);
+			
+			// Set as normal.
+			SetRenderArea((newCoordinateX, newCoordinateY));
+		}
+		
+		/// <summary>
+		/// Adjusts the tile GameObjects in-scene to reflect the underlying map.
+		/// Note: The coordinates of the new corner position will be clamped to be within the true map dimensions.
+		/// </summary>
+		/// <param name="newBottomLeftCorner">The bottom-left coordinate to move the render window to.</param>
+		public void SetRenderArea((uint, uint) newBottomLeftCorner)
 		{
 			// Note: Arrays are ordered [row, column], aka [y, x].
 			// Note: Use of 'long' due to uints having huge range.
 			
 			// Cache the old lower-left coordinates of the render window.
-			(long oldCoordinateX, long oldCoordinateY) = _renderCorner;
+			(long oldCornerX, long oldCornerY) = _renderCorner;
 			// Compute the new lower-left coordinates of the render window.
-			(long newXCoordinate, long newYCoordinate) = newBottomLeftCorner;
+			(long newCornerX, long newCornerY) = newBottomLeftCorner;
 			// Compute the change in the (X,Y) coordinates.
-			(long offsetX, long offsetY) = (newXCoordinate - oldCoordinateX, newYCoordinate - oldCoordinateY);
+			(long offsetX, long offsetY) = (newCornerX - oldCornerX, newCornerY - oldCornerY);
 			// Cache the grid width and height of the render window.
 			(long renderWidth, long renderHeight) = _renderSize;
 			
 			// Clamp the new coordinates to be within the map bounds.
-			newXCoordinate = Math.Min(newXCoordinate, MapWidth - 1 - renderWidth);
-			newYCoordinate = Math.Min(newYCoordinate, MapHeight - 1 - renderHeight);
+			newCornerX = Math.Min(newCornerX, MapWidth - renderWidth);
+			newCornerY = Math.Min(newCornerY, MapHeight - renderHeight);
 			
 			// Todo: Profile for-loop efficiency (swap inner/outer loops?).
 			// Note: Row = Y = [rowIndex, 0]
@@ -120,13 +144,26 @@ namespace Environment
 			// Store the sign of the movement to allow movement either direction to be accounted for.
 			long offsetYSign = Math.Sign(offsetY);
 			// Compute which TileObject rows need to be moved, up to a maximum of all rows.
-			for (long rowIndex = 0; rowIndex < Math.Min(Math.Abs(offsetY), renderHeight); rowIndex++)
+			switch (offsetYSign)
 			{
-				// Compute the index of the current row that safely wraps around the TileObject pool.
-				// Max clamps negatives to 0 to prevent uint overflows on cast.
-				markedRows.Add((uint) Math.Max(0, MathExtras.Operations.Modulo(value: rowIndex * offsetYSign + oldCoordinateY, 
-				                                                           divisor: renderHeight)));
+				case -1:
+					for (long rowIndex = 0; rowIndex < Math.Min(Math.Abs(offsetY), renderHeight); rowIndex++)
+					{
+						// Compute the index of the current row that safely wraps around the TileObject pool.
+						markedRows.Add((uint) MathExtras.Operations.Modulo(value: oldCornerY - 1 - rowIndex,
+						                                                   divisor: renderHeight));
+					}
+					break;
+				case 1:
+					for (long rowIndex = 0; rowIndex < Math.Min(Math.Abs(offsetY), renderHeight); rowIndex++)
+					{
+						// Compute the index of the current row that safely wraps around the TileObject pool.
+						markedRows.Add((uint) MathExtras.Operations.Modulo(value: oldCornerY + rowIndex,
+						                                                   divisor: renderHeight));
+					}
+					break;
 			}
+			
 			
 			// Note: Column = X = [0, rowIndex]
 			// Create an array with a write-index to store which columns of TileObjects need moving.
@@ -134,51 +171,77 @@ namespace Environment
 			// Store the sign of the movement to allow movement either direction to be accounted for.
 			long offsetXSign = Math.Sign(offsetX);
 			// Compute which TileObject columns need to be moved, up to a maximum of all columns.
-			for (long columnIndex = 0; columnIndex < Math.Min(Math.Abs(offsetX), renderWidth); columnIndex++)
+			// Each iteration: Modulo allows a clean way of wrapping around the list
+			switch (offsetXSign)
 			{
-				// Compute the index of the current columns that safely wraps around the TileObject pool.
-				// Max clamps negatives to 0 to prevent uint overflows on cast.
-				markedColumns.Add((uint) Math.Max(0, MathExtras.Operations.Modulo(value: columnIndex * offsetXSign + oldCoordinateX, 
-				                                                                       divisor: renderWidth)));
+				case -1:
+					for (long columnIndex = 0; columnIndex < Math.Min(Math.Abs(offsetX), renderWidth); columnIndex++)
+					{
+						markedColumns.Add((uint) MathExtras.Operations.Modulo(value: oldCornerX - 1 - columnIndex, 
+						                                                      divisor: renderWidth));
+					}
+					break;
+				case 1:
+					for (long columnIndex = 0; columnIndex < Math.Min(Math.Abs(offsetX), renderWidth); columnIndex++)
+					{
+						markedColumns.Add((uint) MathExtras.Operations.Modulo(value: oldCornerX + columnIndex, 
+						                                                      divisor: renderWidth));
+					}
+					break;
 			}
+			
 			
 			// Todo: Investigate other methods of iterating this (besides nested for loop).
 			// Update each flagged TileObject by iterating over the entire 2D array and updating each one that's in either column/row.
-			for (long rowIndex = 0; rowIndex < renderHeight; rowIndex++)
+			for (long renderRowIndex = 0; renderRowIndex < renderHeight; renderRowIndex++)
 			{
-				bool isWithinRow = markedRows.Contains((uint) rowIndex);
+				bool isWithinRow = markedRows.Contains((uint) renderRowIndex);
 				
-				for (long columnIndex = 0; columnIndex < renderWidth; columnIndex++)
+				for (long renderColumnIndex = 0; renderColumnIndex < renderWidth; renderColumnIndex++)
 				{
 					// Check if this tile type is within any of the
-					bool isWithinColumn = markedColumns.Contains((uint) rowIndex);
+					bool isWithinColumn = markedColumns.Contains((uint) renderColumnIndex);
 
 					// Do nothing if the tile does not need to be updated.
 					if (!isWithinRow && !isWithinColumn)
 					{
 						continue;	
 					}
+
+					// Compute the "chunk" the current render tile should sit within.
+					// Chunk is found as the positively-clamped, rounded-up value of: (corner - index) / size.
+					// E.g. Corner at 1, Index of render tile at 2, size at 3, means we have pos-ceil((1-1)/3) = pos-ceil(-2/3) = pos(-1) = 0
+					long chunkCoordinateX = (long) Math.Max(Math.Ceiling((newCornerX - renderColumnIndex) / (double) renderWidth),
+					                                        0);
+					long chunkCoordinateY = (long) Math.Max(Math.Ceiling((newCornerY - renderRowIndex) / (double) renderHeight),
+					                                        0);
+					
+					// Compute the new coordinate to place the tile at.
+					uint newTileXCoordinate = (uint) (chunkCoordinateX * renderWidth + renderColumnIndex);
+					uint newTileYCoordinate = (uint) (chunkCoordinateY * renderHeight + renderRowIndex);
 					
 					// Store the tile information that will be applied.
-					TileInstance tileInstance = InstanceTiles[rowIndex, columnIndex];
+					TileInstance tileInstance = InstanceTiles[newTileYCoordinate, 
+					                                          newTileXCoordinate];
 					TileType tileType = TileTypes[tileInstance.TypeID];
 					Sprite tileSprite = ResourceManager.GetSprite(tileType.spriteID);
 					bool isSolid = tileType.isSolid;
-					
-					// Compute the new coordinate to place the tile at.
-					uint newTileXCoordinate = (uint) Math.Ceiling((double)(newXCoordinate - columnIndex) / renderWidth);
-					uint newTileYCoordinate = (uint) Math.Ceiling((double)(newYCoordinate - rowIndex) / renderHeight); 
 					
 					// Compute the world-coordinates to place the tile at.
 					Vector2 newTilePosition = GetWorldCoordinates((newTileXCoordinate, newTileYCoordinate));
 					
 					// Configure the tile object.
-					TileObject tileObject = _renderTiles[rowIndex, columnIndex];
+					TileObject tileObject = _renderTiles[renderRowIndex, renderColumnIndex];
 					tileObject.Configure(newTilePosition, tileSprite, isSolid);
 				}
 			}
+
+			_renderCorner = ((uint) newCornerX, (uint) newCornerY);
 		}
 
+		/// <summary>
+		/// Re-renders all render tiles.
+		/// </summary>
 		public void RerenderObjectTiles()
 		{
 			// Cache the grid width and height of the render window.
@@ -259,17 +322,25 @@ namespace Environment
 		public void GenerateMap()
 		{
 			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
-			TileInstance[] tileInstanceCopies = TileTypes.Select(tileType => new TileInstance(tileType)).ToArray();
+			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
+			                                                     .Select(tileType => new TileInstance(tileType.Value))
+			                                                     .ToDictionary(tileInstance => tileInstance.TypeID);
 
+			// Todo: Tidy this up
 			// Do basic world gen.
+			long mapLayerSize = MapHeight / 4;
 			for (int row = 0; row < MapHeight; row++)
 			{
-				// TEMP/DEBUG: Compute depth just to make sure each tile works.
-				uint depth = (uint) row;
+				long tileID = 7 - row / mapLayerSize * 2;
+				// If we're not the boundary of a layer, make it not a transition tile.
+				if ((row + 1) % mapLayerSize == 0)
+				{
+					tileID -= 1;
+				}
 
 				for (int column = 0; column < MapWidth; column++)
 				{
-					InstanceTiles[row, column].Set(tileInstanceCopies[7 - depth]);
+					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
 				}
 			}
 
@@ -278,6 +349,11 @@ namespace Environment
 			// Todo: Perform world-gen validation
 			// Todo: Perform navigation graph generation.
 		}
+		/// <summary>
+		/// Configures the map and sets the width & height.
+		/// </summary>
+		/// <param name="width">The width (in tiles) of the map.</param>
+		/// <param name="height">The height (in tiles) of the map.</param>
 		public void ConfigureMap(uint width, uint height)
 		{
 			// Check if we need to create the MapHolder.
@@ -291,6 +367,11 @@ namespace Environment
 			MapWidth = width;
 			MapHeight = height;
 		}
+		/// <summary>
+		/// Configures the render tiles objects of the map.
+		/// </summary>
+		/// <param name="width">The width (in tiles) of the render view.</param>
+		/// <param name="height">The height (in tiles) of the render view.</param>
 		public void ConfigureRenderTiles(ushort width, ushort height)
 		{
 			// Cache the old render size.
@@ -319,18 +400,42 @@ namespace Environment
 								GameObject newInstanceTile = new($"Tile ({columnIndex}, {rowIndex})", 
 								                                 typeof(BoxCollider2D),
 								                                 typeof(SpriteRenderer),
-								                                 typeof(TileObject));
-								newInstanceTile.transform.parent = MapHolder.transform;
+								                                 typeof(TileObject))
+								{
+									transform =
+									{
+										parent = MapHolder.transform,
+										localScale = new Vector3(TileSize, TileSize, TileSize)
+									}
+								};
 								newRenderTiles[rowIndex, columnIndex] = newInstanceTile.GetComponent<TileObject>();
 								break;
 						}
 					}
 				}
 				
-				// Check if we need to destroy any truncated render tiles.
-				if (width > oldWidth || height > oldHeight)
+				// Clean up old tiles that will be out-of-range of the new.
+				if (height < oldHeight)
 				{
-					// Todo: Iterate over and destroy each tile outside the new range.
+					// Destroy each GameObject in each unused row.
+					for (int rowIndex = height; rowIndex < oldHeight; rowIndex++)
+					{
+						for (int columnIndex = 0; columnIndex < oldWidth; columnIndex++)
+						{
+							Destroy(oldRenderTiles[rowIndex, columnIndex]);
+						}
+					}
+				}
+				if (width < oldWidth)
+				{
+					// Destroy each GameObject in each unused row.
+					for (int rowIndex = 0; rowIndex < oldHeight; rowIndex++)
+					{
+						for (int columnIndex = width; columnIndex < oldWidth; columnIndex++)
+						{
+							Destroy(oldRenderTiles[rowIndex, columnIndex]);
+						}
+					}
 				}
 
 				// Assign the new render tile array.
@@ -342,14 +447,13 @@ namespace Environment
 		}
 		
 		// METHODS - UNITY
-		private void Awake()
+		private void Start()
 		{
-			ConfigureMap(10, 8);
-			ConfigureRenderTiles(10, 8);
+			ConfigureMap(2000, 80);
+			ConfigureRenderTiles(48, 27);
 			GenerateMap();
 			MoveMap(Vector2.zero);
 			RerenderObjectTiles();
-			
 			
 			Debug.Log($"Map size: {MapWidth}, {MapHeight}");
 		}
@@ -358,22 +462,21 @@ namespace Environment
 		{
 			
 			// TODO: DEBUG/DEMONSTRATION CODE, REMOVE
-			(uint oldXCoordinate, uint oldYCoordinate) = _renderCorner;
-			if (Input.GetKeyDown(KeyCode.UpArrow))
+			if (Input.GetKey(KeyCode.UpArrow))
 			{
-				AdjustObjectTiles((oldXCoordinate, Math.Clamp(oldYCoordinate + 1, 0, 100)));
+				MoveRenderArea((0, 1));
 			}
-			else if (Input.GetKeyDown(KeyCode.DownArrow))
+			if (Input.GetKey(KeyCode.DownArrow))
 			{
-				AdjustObjectTiles((oldXCoordinate, Math.Clamp(oldYCoordinate - 1, 0, 100)));
+				MoveRenderArea((0, -1));
 			}
-			else if (Input.GetKeyDown(KeyCode.LeftArrow))
+			if (Input.GetKey(KeyCode.LeftArrow))
 			{
-				AdjustObjectTiles((Math.Clamp(oldXCoordinate - 1, 0, 1000), oldYCoordinate));
+				MoveRenderArea((-1, 0));
 			}
-			else if (Input.GetKeyDown(KeyCode.RightArrow))
+			if (Input.GetKey(KeyCode.RightArrow))
 			{
-				AdjustObjectTiles((Math.Clamp(oldXCoordinate + 1, 0, 1000), oldYCoordinate));
+				MoveRenderArea((1, 0));
 			}
 		}
 	}

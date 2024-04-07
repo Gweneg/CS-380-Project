@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8646946369034367123
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4778039386366611637}
+  - component: {fileID: 4842116600804943545}
+  - component: {fileID: 7672293397219664755}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4778039386366611637
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646946369034367123}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.13128963, y: 0.19391054, z: 0.039982665}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4842116600804943545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646946369034367123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16c0a2d85e21f6c49a3c33a4221a9828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spritesInit:
+  - id: 0
+    sprite: {fileID: 0}
+  - id: 1
+    sprite: {fileID: 6361805307217191512, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 2
+    sprite: {fileID: 8407654331236611907, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 3
+    sprite: {fileID: -1856906550726046326, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 4
+    sprite: {fileID: 1310553420381228079, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 5
+    sprite: {fileID: -3052114548422161908, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 6
+    sprite: {fileID: -2904906805600825909, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 7
+    sprite: {fileID: 8617930031259710241, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 8
+    sprite: {fileID: -4254908630410942589, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 9
+    sprite: {fileID: 6445839120098830099, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+--- !u!114 &7672293397219664755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646946369034367123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 100de795e87874740b7f517674829bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
