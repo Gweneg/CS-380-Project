@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 120493864}
   - component: {fileID: 120493863}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -657,7 +657,7 @@ Transform:
   m_GameObject: {fileID: 581128864}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2020, y: 0, z: 0}
+  m_LocalPosition: {x: -2019.9, y: -9.2, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1177,7 +1177,7 @@ Transform:
   m_GameObject: {fileID: 1758746886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2020, y: 0, z: 0}
+  m_LocalPosition: {x: -2019.9, y: -9.40001, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1271,7 +1271,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 2486.6343, y: -491.70737}
-  m_SizeDelta: {x: -1820, y: -884}
+  m_SizeDelta: {x: -1819.9998, y: -884}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1895967869
 GameObject:
@@ -1299,7 +1299,7 @@ Transform:
   m_GameObject: {fileID: 1895967869}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2020, y: 0, z: 0}
+  m_LocalPosition: {x: -2019.9, y: -9.40001, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
