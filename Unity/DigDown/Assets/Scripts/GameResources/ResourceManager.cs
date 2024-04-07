@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Resources
+namespace GameResources
 {
 	/// <summary>
 	///	Loads and holds references to all art and sound assets that require swapping at run-time (e.g. tile pooling).
