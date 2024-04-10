@@ -18,7 +18,6 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
     {
         body = GetComponent<Rigidbody2D>(); //-check the difference between this line vs a variable of type Rigidbody2D used to change component settings.
         anime = GetComponent<Animator>(); //- body and anime are component reference variables
-
     }
 
     void Start()
@@ -52,13 +51,13 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
 
 
         //Checks for a space bar input and if our player is standing on a ground for a jump action
-        if(Input.GetKey(KeyCode.Space) && grounded)
+        if (Input.GetKey(KeyCode.Space) && grounded && holdShotgun == true)
+        {
+            anime.SetBool("HoldShotgun", holdShotgun);
+            JumpWShotgun();
+        } else if(Input.GetKey(KeyCode.Space) && grounded)
         {
             Jump();
-        }
-        if (holdShotgun == true)
-        {
-            Debug.Log("success");
         }
 
         //starts a running animation
@@ -77,6 +76,13 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
         anime.SetTrigger("Jump");
         grounded = false;
     }
+    private void JumpWShotgun() //- custom addition
+    {
+        body.velocity = new Vector2(body.velocity.x, speed);
+        anime.SetTrigger("JumpShotgun");
+        grounded = false;
+    }
+
     //checks if player is on the ground
     void OnCollisionEnter2D(Collision2D collision)
     {

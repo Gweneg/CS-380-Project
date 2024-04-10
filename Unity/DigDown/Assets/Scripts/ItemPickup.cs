@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour //gameObject in this case would be the player or the pickaxe, but not my shotgun because shotgun object doesnt have this script
 {
+    public PlayerMovement aPM; //-forgot what exactly PM is labelled as. Will be used to reference variables from the PlayerMovement script(aka class)
     public GameObject GUNCONTAINER;//parent object
     public GameObject SHOTGUN;//child object
-    public PlayerMovement aPM; //-forgot what exactly PM is labelled as. Will be used to reference variables from the PlayerMovement script(aka class)
     public bool Button7ON;
-    private Animator anime; //-component variable
+    public Animator anime; //-component variable //-was private
+    public int ammoShotgun;
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         SHOTGUN = GameObject.Find("Shotgun");
         GUNCONTAINER = GameObject.Find("gunContainer");
@@ -27,11 +28,11 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             aPM.holdShotgun = false;
             Debug.Log("Pickaxe equipped");
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
-            //destroy shotgun gameObject since character would now be holding the pickaxe.
-            SHOTGUN.SetActive(false);
+            SHOTGUN.SetActive(false); //hide shotgun gameObject since character would now be holding the pickaxe.
         }
         if (Input.GetKeyDown(KeyCode.Alpha8))//--//Need to detect key presses only. Once that keypress is pressed, it activates the code once.
         {
+            Debug.Log("ammoShotgun value is " + ammoShotgun);
             aPM.holdShotgun = true;
             Debug.Log("Shotgun equipped");
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
@@ -43,20 +44,10 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             SHOTGUN.transform.localScale = Vector3.one;//^^^
 
         }
-        //Debug.Log("holdShotgun variable state is " + aPM.holdShotgun);
-
-
-
-
-
-
-        //Debug.Log("equipped shotgun");
-        //aPM.holdShotgun = true;
-        ////anime.SetBool("HoldShotgun", aPM.holdShotgun);
     }
     //--//--//--//--//--//--//--//--
 
-    private void OnTriggerEnter2D(Collider2D collision) //-check what exactly this function does.
+    public void OnTriggerEnter2D(Collider2D collision) //-check what exactly this function does. (got a better idea what it means) //- was private
     {
         if (collision.tag == "Player")
         {
@@ -68,8 +59,7 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             //on collision, remove shotgun from floor, and add to player inventory
             //-SHOTGUN variable now refers to the Shotgun gameObject.
             SHOTGUN.SetActive(false);
-            //Destroy(SHOTGUN);
-            //dinkleberg
+            ammoShotgun = 10;
         }
         if (collision.tag == "Weapon")
         {
