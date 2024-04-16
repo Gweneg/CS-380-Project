@@ -67,5 +67,6 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             anime.SetBool("Pickaxe (Hold)", true);
             Debug.Log(gameObject + " picked up weapon");
         }
+        
     }
 }

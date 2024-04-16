@@ -7,16 +7,23 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public ItemPickup aIP; //-
-    public PlayerMovement aPM; //--//-- important, keep watch if this works well
+    public ItemPickup aIP; //-reference variable to the ItemPickup class
+    public PlayerMovement aPM; //-reference variable to the ItemPickup class - important, keep watch if this works well
+    public DetectShots aDS;
 
     [SerializeField] private float attackCoolDown;
     private Animator anime;
 
-    public GameObject SHOTGUN;
-    public Animator shotgunAnimator; //-
-    //public Animation shotgunAnimation; //-
-    private PlayerMovement playerMovement;
+    public GameObject ENEMY;
+
+    public GameObject SHOTGUN; //game object variable
+    public Animator shotgunAnimator; //component variable
+
+    public GameObject SHOTGUN_AUDIO_SOURCE; //**
+    public AudioSource shotgunAudioSource;//component variable
+    public AudioClip explosionAudioClip;//component varibale - assign the audio clip you want to play to the explosionAudioClip field in the Inspector
+
+    private PlayerMovement playerMovement; //-reference variable to the ItemPickup class
     private float coolDownTimer = Mathf.Infinity;
     public Transform attackPoint;
     public float attackRange = .5f;
@@ -25,6 +32,8 @@ public class PlayerAttack : MonoBehaviour
     // Awake is called before the first frame update
     private void Awake()
     {
+        ENEMY = GameObject.Find("enemy1");
+
         //gained access to the SHOTGUN gameobject, and from there I had access to its components, hence shotgunAnimator = SHOTGUN.GetComponent<Animator>();
         SHOTGUN = GameObject.Find("Shotgun");
         //shotgunAnimation = SHOTGUN.GetComponent<Animation>();//-
@@ -32,7 +41,10 @@ public class PlayerAttack : MonoBehaviour
         anime = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
 
-        //shotgunAnimation.
+        SHOTGUN_AUDIO_SOURCE = GameObject.Find("shotgunAudioObject"); //**
+        shotgunAudioSource = SHOTGUN_AUDIO_SOURCE.GetComponent<AudioSource>();//**
+        //shotgunAudioSource = SHOTGUN.GetComponent<AudioSource>();//--//--
+        shotgunAudioSource.clip = explosionAudioClip;//
     }
     // Update registers user input
     public void Update() //- was private
@@ -44,29 +56,31 @@ public class PlayerAttack : MonoBehaviour
         coolDownTimer += Time.deltaTime;
         //**Everytime this condition is met v, the shoot animation should restart. SUCCESS
         //**There should also be a coolDown attack timer, but not too high. NVM
-        if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0) //Recall that keyDown works more like a keyPress.
+        if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun) //Recall that keyDown works more like a keyPress.
         {
+            if (aDS.inRange == true)
+            {
+                ENEMY.SetActive(false);
+            }
             aIP.ammoShotgun = aIP.ammoShotgun - 1;
             shotgunAnimator.Play("Shotgun Firing", 0, 0f); //ensures that whenever condition is met, immediately the animation restarts from the beginning.
-            //shotgunAnimator.SetTrigger("ShootShotgunTrig"); //replacing this with a trigger may be a better option than using a bool.
+            //-Code for "shooting shotgun sound" goes here.
+            shotgunAudioSource.Play(); //CURRENT ISSUE: If I spam shoot the gun too fast, on the final shot attempted without ammo would
+            //deactivate the shotgun game object, therefore also deactivating the audio clip attached to it. So in this spam scenario, the
+            //audio would just get cut out on the final shot. (Potentially just attach the audio source component to another game Object)
+
+            //-Projectile/raycast code goes here
+            //-Must add projectile(visible or not) to hurt enemies
+
             Debug.Log("aIP.ammoShotgun value is " + aIP.ammoShotgun); //one issue is it kept saying the value was 0.
             //I believe it was because it kept picking the ammoShotgun global variable which was initialized to 0. I believe it just kept
             //picking up the variable as it was set to 0. ANSWER: the script was not placed within the public variable aIP in the inspector.
             Debug.Log("Shotgun has been fired");
 
-            //Once the ammo reaches 0 and the shooting animation has finished, holdShotgun parameter can now be set to false, shotgun object set to false, etc
-                    //if (!(shotgunAnimator.GetCurrentAnimatorStateInfo(0).IsName("Shotgun Firing")) && (aIP.ammoShotgun == 0))
-                    //{
-                    //    aPM.holdShotgun = false; //or try aIP.aPM.holdShotgun = false;
-                    //    Debug.Log("shooting animation has finished and the ammo is depleted.");
-                    //    aIP.anime.SetBool("HoldShotgun", aPM.holdShotgun); //or try aIP.aPM.holdShotgun
-                    //    SHOTGUN.SetActive(false);
-                    //    Debug.Log("No ammo");
-                    //}
-        } else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0) //try shooting but clip is already empty
+        } else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun) //try shooting but clip is already empty
         {
             aPM.holdShotgun = false;
-            aIP.anime.SetBool("HoldShotgun", aPM.holdShotgun);
+            anime.SetBool("HoldShotgun", aPM.holdShotgun);//aIP.anime.SetBool("HoldShotgun", aPM.holdShotgun);
             SHOTGUN.SetActive(false);
             Debug.Log("No ammo");
         }

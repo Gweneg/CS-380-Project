@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
     public bool holdShotgun = false;
     [SerializeField] private float speed;
     private Rigidbody2D body; //-variable to reference the RigidBody component
-    private Animator anime; //-variable to reference the Animator component
+    public Animator anime; //-variable to reference the Animator component //- was private
     private bool grounded;
 
     // Awake is called at the start
@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
 
     void Start()
     {
-
+    
     UnityEngine.Debug.Log("PlayerMovement class called");
     }
 
@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
 
 
         //Checks for a space bar input and if our player is standing on a ground for a jump action
-        if (Input.GetKey(KeyCode.Space) && grounded && holdShotgun == true)
+        if ((Input.GetKey(KeyCode.Space) && grounded) && holdShotgun)
         {
             anime.SetBool("HoldShotgun", holdShotgun);
             JumpWShotgun();
