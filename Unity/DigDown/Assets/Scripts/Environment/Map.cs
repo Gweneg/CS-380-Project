@@ -33,7 +33,8 @@ namespace Environment
 		public static GameObject MapHolder;
 		/// <summary>
 		/// The different types tiles could be.
-		/// </summary>
+		/// </summary> 
+		/// 
 		public static readonly Dictionary<int, TileType> TileTypes =
 			new()
 		{
@@ -46,7 +47,8 @@ namespace Environment
 			{5, new TileType(typeID: 5, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
 			{6, new TileType(typeID: 6, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
 			{7, new TileType(typeID: 7, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
-			{8, new TileType(typeID: 8, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)}       // Void.
+			{8, new TileType(typeID: 8, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)},       // Void.
+			{9, new TileType(typeID: 9, spriteID: 10, durabilityMax: 20, durabilityHardness: 255, isSolid: true)}  	  //iron
 		};
 		/// <summary>
 		/// The instances of tiles for the current map.
@@ -299,6 +301,28 @@ namespace Environment
 			return _mapOffset + new Vector2(xCoordinate, yCoordinate) * TileSize;
 		}
 
+		//Changes a random tile from the map into a tile of another type
+		//
+		public void ChangeTile()
+		{
+			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
+			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
+			                                                     .Select(tileType => new TileInstance(tileType.Value))
+			                                                     .ToDictionary(tileInstance => tileInstance.TypeID);
+			//Get random coordinates from the Map
+			int randomX = UnityEngine.Random.Range(0, (int)MapWidth);
+			int randomY = UnityEngine.Random.Range(0, (int)MapHeight - (int)MapHeight/4);
+
+			// Get the current tile instance at the random coordinates
+			TileInstance airTile = tileInstanceCopies[255]; //air
+			TileInstance ironTile = tileInstanceCopies[9]; //iron
+
+			// Update the tile instance with the new tile type
+			InstanceTiles[randomY, randomX].Set(airTile);
+			InstanceTiles[randomY, randomX].Set(ironTile);
+		}
+
+
 		// METHODS - SCENE INTERACTION
 		/// <summary>
 		/// Positions the map such that the middle of the bottom of it lies on the given point.
@@ -313,36 +337,37 @@ namespace Environment
 			// Update the offset.
 			_mapOffset = mapTransform.position;
 		}
-		
+
+
 		// METHODS - MAP INTERACTION
 		/// <summary>
 		/// Generates a map with the given dimensions.
 		/// </summary>
+		/// 
 		public void GenerateMap()
 		{
 			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
 			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
 			                                                     .Select(tileType => new TileInstance(tileType.Value))
 			                                                     .ToDictionary(tileInstance => tileInstance.TypeID);
-			
-			// 1. Get the type from the ID
-			TileType newTilesType = TileTypes[1];
-			// 2. Create the tile from the type
-			TileInstance newTileA = new TileInstance(newTilesType);
-			
+			// // 1. Get the type from the ID
+			// TileType newTilesType = TileTypes[1];
+			// // 2. Create the tile from the type
+			// TileInstance newTileA = new TileInstance(newTilesType);
+
 			// (1 + 2 Combined)
 			TileInstance newTileB = tileInstanceCopies[1];
-			
+
 			// 3. Set the tile in the world
 			InstanceTiles[0, 0].Set(newTileB);
-			
-			
+
+
 			// Todo: Tidy this up
 			// Loops over the entire world (starting at bottom left, sweeping all the way to the right, then moving up one block)
 			for (int row = 0; row < MapHeight; row++)
 			{
 				// Choose tile type here
-				long tileID = 0;
+				long tileID = 3;
 
 				for (int column = 0; column < MapWidth; column++)
 				{
@@ -350,8 +375,8 @@ namespace Environment
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
 				}
 			}
-			
-			
+
+
 			// Todo: Placeholder, replace?
 			long mapLayerSize = MapHeight / 4;
 			for (int row = 0; row < MapHeight; row++)
@@ -367,6 +392,9 @@ namespace Environment
 				{
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
 				}
+			}
+			for(int i = 0; i < 100; i++){
+				ChangeTile();
 			}
 			
 
@@ -476,7 +504,7 @@ namespace Environment
 		private void Start()
 		{
 			ConfigureMap(200, 16);
-			ConfigureRenderTiles(16, 9);
+			ConfigureRenderTiles(25, 10);
 			GenerateMap();
 			MoveMap(Vector2.zero);
 			RerenderObjectTiles();
