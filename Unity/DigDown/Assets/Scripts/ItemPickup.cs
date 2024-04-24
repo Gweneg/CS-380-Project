@@ -10,9 +10,9 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
 
     //public LayerMask childLayerMask;
 
-    public bool Button7ON;
     public Animator anime; //-component variable //-was private
     public int ammoShotgun;
+    public bool pickaxeInInventory;
     public bool shotgunInInventory;
 
     // Start is called before the first frame update
@@ -28,20 +28,20 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
     /////////////////////////////////////////////////////////////////////////
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha7)) 
+        if (Input.GetKeyDown(KeyCode.Alpha7) && pickaxeInInventory == true) 
         {
-            aPM.holdShotgun = false;
             Debug.Log("Pickaxe equipped");
-            anime.SetBool("HoldShotgun", aPM.holdShotgun);
             //anime.SetTrigger("Pickaxe");
-
+            anime.SetBool("Pickaxe (Hold)", true);
+            aPM.holdShotgun = false;
+            anime.SetBool("HoldShotgun", aPM.holdShotgun);
             SHOTGUN.SetActive(false); //ONLY hide the shotgun that is in players hand
         }
         if (Input.GetKeyDown(KeyCode.Alpha8) && shotgunInInventory == true)
         {
-            //anime.SetBool("Pickaxe (Hold)", false);
-            aPM.holdShotgun = true;
             Debug.Log("Shotgun equipped");
+            anime.SetBool("Pickaxe (Hold)", false);
+            aPM.holdShotgun = true;
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
             //make the shotgun object reappear, move shotgun to the gun container so it appears character is holding the shotgun
             SHOTGUN.SetActive(true);
@@ -53,27 +53,27 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
     }
     /////////////////////////////////////////////////////////////////////////
 
-    public void OnTriggerEnter2D(Collider2D collision) //This plays when the object collides with something with an active collider trigger. 
-    {
-        if (collision.tag == "Player")
-        {
-            Destroy(gameObject);
-            Debug.Log(gameObject + " was Picked up");
-        }
-        if (collision.tag == "Weapon")
-        {
-            anime.SetTrigger("Pickaxe");
-            anime.SetBool("Pickaxe (Hold)", true);
-            Debug.Log(gameObject + " picked up weapon");
-        }
+    //public void OnTriggerEnter2D(Collider2D collision) //This plays when the object collides with something with an active collider trigger. 
+    //{
+    //    if (collision.tag == "Player")
+    //    {
+    //        Destroy(gameObject);
+    //        Debug.Log(gameObject + " was Picked up");
+    //    }
+    //    if (collision.tag == "Weapon")
+    //    {
+    //        anime.SetTrigger("Pickaxe");
+    //        anime.SetBool("Pickaxe (Hold)", true);
+    //        Debug.Log(gameObject + " picked up weapon");
+    //    }
 
-        //if (collision.gameObject.name == "New Dwarf") //add this code to a separate script in the Pickaxe game object. Also delete the OnTriggerEnter2D method and code as well.
-        //{
-        //    anime.SetTrigger("Pickaxe");
-        //    anime.SetBool("Pickaxe (Hold)", true);
-        //    //Debug.Log(gameObject + " picked up weapon");
-        //    Destroy(gameObject);
-        //    Debug.Log(gameObject + " was Picked up");
-        //}
-    }
+    //    //if (collision.gameObject.name == "New Dwarf") //add this code to a separate script in the Pickaxe game object. Also delete the OnTriggerEnter2D method and code as well.
+    //    //{
+    //    //    anime.SetTrigger("Pickaxe");
+    //    //    anime.SetBool("Pickaxe (Hold)", true);
+    //    //    //Debug.Log(gameObject + " picked up weapon");
+    //    //    Destroy(gameObject);
+    //    //    Debug.Log(gameObject + " was Picked up");
+    //    //}
+    //}
 }

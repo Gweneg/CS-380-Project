@@ -11,13 +11,8 @@ public class PlayerAttack : MonoBehaviour
     public PlayerMovement aPM; //-reference variable to the ItemPickup class - important, keep watch if this works well
     public DetectShots aDS; //-reference variable to the DetectShot class
 
-    //float speed = 20f;
-    //float distance = 5f;
-
     [SerializeField] private float attackCoolDown;
     private Animator anime;
-
-    public RaycastHit2D hit;
 
     public GameObject ENEMY;
     public GameObject SHOTGUN; //game object variable
@@ -32,7 +27,6 @@ public class PlayerAttack : MonoBehaviour
     private float coolDownTimer = Mathf.Infinity;
     public Transform attackPoint;
     public float attackRange = .5f;
-    //public bool shotgunFired;
     
     public LayerMask enemyLayers;
 
@@ -124,7 +118,7 @@ public class PlayerAttack : MonoBehaviour
             Debug.Log("No ammo!");
         }
         //checks for a left mouse button input along with other restrictions if needed
-        if (Input.GetMouseButton(0) && coolDownTimer > attackCoolDown && playerMovement.canAttack()) {
+        if (Input.GetMouseButton(0) && coolDownTimer > attackCoolDown && playerMovement.canAttack() && aPM.holdShotgun == false) {
             Attack();
         }
         coolDownTimer += Time.deltaTime;
@@ -152,9 +146,9 @@ public class PlayerAttack : MonoBehaviour
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireCube(shotgunColliderCenPos, shotgunCollidersize/4); //this method takes in Vector3 parameters so not sure if it is a correct depiction. Dividing by 4 makes it accurately shaped.
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.white;
+    //    Gizmos.DrawWireCube(shotgunColliderCenPos, shotgunCollidersize/4); //this method takes in Vector3 parameters so not sure if it is a correct depiction. Dividing by 4 makes it accurately shaped.
+    //}
 }

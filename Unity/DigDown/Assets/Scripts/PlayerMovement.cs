@@ -84,9 +84,9 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
     }
 
     //checks if player is on the ground
-    void OnCollisionEnter2D(Collision2D collision)
+    public void OnCollisionEnter2D(Collision2D collision) //- was blank before
     {
-        if(collision.gameObject.tag == "Ground")
+        if(collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Enemy") 
         {
             grounded = true;
         }

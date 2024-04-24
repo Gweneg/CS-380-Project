@@ -134,9 +134,7 @@ GameObject:
   - component: {fileID: 23933927}
   - component: {fileID: 23933926}
   - component: {fileID: 23933925}
-  - component: {fileID: 23933924}
   - component: {fileID: 23933923}
-  - component: {fileID: 23933922}
   - component: {fileID: 23933921}
   m_Layer: 0
   m_Name: Shotgun4
@@ -158,26 +156,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aIP: {fileID: 779510116}
---- !u!114 &23933922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 23933920}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0a2ad0a3fab42e89829047737068b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aIP: {fileID: 0}
-  aPM: {fileID: 0}
-  inRange: 0
-  shotgunFired: 0
-  enemiesInSight: 0
-  enemiesInRange: []
-  enemiesInTheRange: []
-  closestEnemy: {fileID: 0}
 --- !u!61 &23933923
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -223,47 +201,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.891945, y: 2.4263082}
   m_EdgeRadius: 0
---- !u!68 &23933924
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 23933920}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -8.6, y: 0}
-  - {x: -1.35, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!95 &23933925
 Animator:
   serializedVersion: 5
@@ -1285,7 +1222,6 @@ GameObject:
   - component: {fileID: 608747863}
   - component: {fileID: 608747862}
   - component: {fileID: 608747864}
-  - component: {fileID: 608747865}
   - component: {fileID: 608747867}
   - component: {fileID: 608747868}
   m_Layer: 0
@@ -1383,47 +1319,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!68 &608747865
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 608747860}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -8.6, y: 0}
-  - {x: -1.35, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!61 &608747867
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1825,9 +1720,9 @@ MonoBehaviour:
   aPM: {fileID: 779510115}
   GUNCONTAINER: {fileID: 0}
   SHOTGUN: {fileID: 0}
-  Button7ON: 0
   anime: {fileID: 0}
   ammoShotgun: 0
+  pickaxeInInventory: 0
   shotgunInInventory: 0
 --- !u!1 &944500867
 GameObject:
@@ -2259,7 +2154,7 @@ GameObject:
   - component: {fileID: 1427708587}
   - component: {fileID: 1427708586}
   - component: {fileID: 1427708585}
-  - component: {fileID: 1427708588}
+  - component: {fileID: 1427708589}
   m_Layer: 0
   m_Name: Pickaxe
   m_TagString: Weapon
@@ -2369,13 +2264,13 @@ Transform:
   m_GameObject: {fileID: 1427708584}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.9659258, w: 0.2588191}
-  m_LocalPosition: {x: -11.06, y: -1.22, z: 0}
+  m_LocalPosition: {x: -7.32, y: -1.15, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 150}
---- !u!114 &1427708588
+--- !u!114 &1427708589
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2384,16 +2279,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1427708584}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6989a06fb575b942a8d9edd2e109f58, type: 3}
+  m_Script: {fileID: 11500000, guid: 7978b4f546267481db2e1b2f77540a54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aPM: {fileID: 0}
-  GUNCONTAINER: {fileID: 0}
-  SHOTGUN: {fileID: 0}
-  Button7ON: 0
-  anime: {fileID: 0}
-  ammoShotgun: 0
-  shotgunInInventory: 0
+  aIP: {fileID: 779510116}
 --- !u!1 &1517562105
 GameObject:
   m_ObjectHideFlags: 0
@@ -2564,9 +2453,7 @@ GameObject:
   - component: {fileID: 1548551441}
   - component: {fileID: 1548551440}
   - component: {fileID: 1548551439}
-  - component: {fileID: 1548551438}
   - component: {fileID: 1548551437}
-  - component: {fileID: 1548551436}
   - component: {fileID: 1548551435}
   m_Layer: 0
   m_Name: Shotgun3
@@ -2588,26 +2475,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aIP: {fileID: 779510116}
---- !u!114 &1548551436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1548551434}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0a2ad0a3fab42e89829047737068b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aIP: {fileID: 0}
-  aPM: {fileID: 0}
-  inRange: 0
-  shotgunFired: 0
-  enemiesInSight: 0
-  enemiesInRange: []
-  enemiesInTheRange: []
-  closestEnemy: {fileID: 0}
 --- !u!61 &1548551437
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2653,47 +2520,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.891945, y: 2.4263082}
   m_EdgeRadius: 0
---- !u!68 &1548551438
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1548551434}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -8.6, y: 0}
-  - {x: -1.35, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!95 &1548551439
 Animator:
   serializedVersion: 5
@@ -2923,9 +2749,7 @@ GameObject:
   - component: {fileID: 1818475531}
   - component: {fileID: 1818475530}
   - component: {fileID: 1818475529}
-  - component: {fileID: 1818475528}
   - component: {fileID: 1818475527}
-  - component: {fileID: 1818475526}
   - component: {fileID: 1818475532}
   m_Layer: 0
   m_Name: Shotgun2
@@ -2934,26 +2758,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1818475526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1818475525}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab0a2ad0a3fab42e89829047737068b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aIP: {fileID: 0}
-  aPM: {fileID: 0}
-  inRange: 0
-  shotgunFired: 0
-  enemiesInSight: 0
-  enemiesInRange: []
-  enemiesInTheRange: []
-  closestEnemy: {fileID: 0}
 --- !u!61 &1818475527
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2999,47 +2803,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.891945, y: 2.4263082}
   m_EdgeRadius: 0
---- !u!68 &1818475528
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1818475525}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -8.6, y: 0}
-  - {x: -1.35, y: 0}
-  m_AdjacentStartPoint: {x: 0, y: 0}
-  m_AdjacentEndPoint: {x: 0, y: 0}
-  m_UseAdjacentStartPoint: 0
-  m_UseAdjacentEndPoint: 0
 --- !u!95 &1818475529
 Animator:
   serializedVersion: 5
