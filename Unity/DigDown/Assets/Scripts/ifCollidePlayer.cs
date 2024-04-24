@@ -19,13 +19,10 @@ public class ifCollidePlayer : MonoBehaviour
     }
     public void OnTriggerEnter2D(Collider2D collision)
     {        
-        if (collision.gameObject.name == "New Dwarf") //this lowkey worked
+        if (collision.gameObject.name == "New Dwarf") //if the object collided only with the game object that is called "New Dwarf"
         {
             aIP.shotgunInInventory = true;
             aIP.ammoShotgun = aIP.ammoShotgun + 10;
-
-            //Debug.Log("Shotgun ammo obtained. Ammo value is now " + aIP.ammoShotgun);
-            //Debug.Log("this means shotgun only disappeared once ONLY player touched it.");
             Destroy(gameObject);
         }
     }

@@ -23,6 +23,7 @@ public class PlayerAttack : MonoBehaviour
     public GameObject SHOTGUN; //game object variable
     public GameObject SHOTGUN_AUDIO_SOURCE; //**
     public Animator shotgunAnimator; //component variable
+    public GameObject PLAYER;
 
     public AudioSource shotgunAudioSource;//component variable
     public AudioClip explosionAudioClip;//component varibale - assign the audio clip you want to play to the explosionAudioClip field in the Inspector
@@ -35,6 +36,7 @@ public class PlayerAttack : MonoBehaviour
     
     public LayerMask enemyLayers;
 
+    
     public BoxCollider2D shotgunRangeCollider; //HERE
     public Collider2D[] enemiesInRangeArr;//HERE
 
@@ -47,15 +49,22 @@ public class PlayerAttack : MonoBehaviour
     public Vector2 centerPosition;//oo
     public float rotation; //oo
 
+    public float distance;
+    public float closestDistance;
+    public GameObject closestEnemy;
+    //public Vector3 playerCenterPosition;
 
     
 
     // Awake is called before the first frame update
     private void Awake()
     {
+        closestDistance = 500;
         ENEMY = GameObject.Find("enemy1");
 
         SHOTGUN = GameObject.Find("Shotgun");//gained access to the SHOTGUN gameobject, and from there I had access to its components, hence shotgunAnimator = SHOTGUN.GetComponent<Animator>();
+        PLAYER = GameObject.Find("New Dwarf");
+
         shotgunAnimator = SHOTGUN.GetComponent<Animator>();
         anime = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
@@ -67,7 +76,6 @@ public class PlayerAttack : MonoBehaviour
 
         shotgunRangeCollider = SHOTGUN.GetComponent<BoxCollider2D>(); //HERE
         shotgunCollidersize = shotgunRangeCollider.size; //we obtained the size of the shotgun's 2D box collider.
-        
 
         Debug.Log("The shotgun's 2D box collider size is " + shotgunCollidersize); //CORRECT SIZE GETS OUTPUTTED.
         Debug.Log("The shotgun's 2D box collider position is " + shotgunColliderCenPos);
@@ -75,26 +83,38 @@ public class PlayerAttack : MonoBehaviour
     // Update registers user input
     public void Update() //- was private
     {
-        //so far so good with the collider positioning.
-
         if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun)
         {
             //aDS.shotgunFired = true;
-            shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime this condition is met v, the shoot animation should restart. SUCCESS
+            shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
-            aIP.ammoShotgun = aIP.ammoShotgun - 1;//subtract one bullet from gun
+            aIP.ammoShotgun = aIP.ammoShotgun - 1;//subtract one bullet from gun ammo
 
-            shotgunColliderCenPos = shotgunRangeCollider.bounds.center; //need to obtain the center position of the shotgun box collider.
-            shotgunColliderRotation = shotgunRangeCollider.transform.rotation; //need to obtain the rotation of the shotgun box collider.
-            angleInDegrees = shotgunColliderRotation.eulerAngles.z;
-            enemiesInRangeArr = Physics2D.OverlapBoxAll(shotgunColliderCenPos, shotgunCollidersize, angleInDegrees);
+            shotgunColliderCenPos = shotgunRangeCollider.bounds.center; //need to obtain the CURRENT center position of the shotgun box collider.
+            shotgunColliderRotation = shotgunRangeCollider.transform.rotation; //need to obtain the CURRENT rotation of the shotgun box collider.
+            angleInDegrees = shotgunColliderRotation.eulerAngles.z; //need to obtain the CURRENT angle of the shotgun Box Collider
+
+            enemiesInRangeArr = Physics2D.OverlapBoxAll(shotgunColliderCenPos, shotgunCollidersize/4, angleInDegrees);
 
             foreach (Collider2D collider in enemiesInRangeArr) //this is working a little better now.
             {
-                Debug.Log("Enemies within the shotgun box collider when FIRED are " + collider.gameObject.name);//collider.gameObject.name);
-            }
-            enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
+                if (collider.CompareTag("Enemy"))
+                {
+                    Debug.Log("The collider.gameObject.transform.position object was " + collider.gameObject.name); //should be an enemy.
+                    distance = Vector2.Distance(PLAYER.transform.position, collider.gameObject.transform.position); //obtain distance between the player and the collided enemy object
 
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestEnemy = collider.gameObject;
+                    }
+                    Debug.Log("Enemies within the shotgun box collider when FIRED are " + collider.gameObject.name); //Only print the objects names that have the Enemy tag.
+                }
+            }
+            closestDistance = 500; //reset the closest distance value.
+            Destroy(closestEnemy);
+            enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
+            Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
         }
         else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun)
         {

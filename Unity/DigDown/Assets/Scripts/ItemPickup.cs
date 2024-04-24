@@ -28,17 +28,18 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
     /////////////////////////////////////////////////////////////////////////
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha7)) //&& shotgun is a child of gunContainer == true) //--//Need to detect key presses only. Once that keypress is pressed, it activates the code once.
+        if (Input.GetKeyDown(KeyCode.Alpha7)) 
         {
-            //this code will only make the shotgun in player's hand disappear.
             aPM.holdShotgun = false;
             Debug.Log("Pickaxe equipped");
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
-            //shotgun that is a child of dwarf is the one that must disappear.
+            //anime.SetTrigger("Pickaxe");
+
             SHOTGUN.SetActive(false); //ONLY hide the shotgun that is in players hand
         }
-        if (Input.GetKeyDown(KeyCode.Alpha8) && shotgunInInventory == true) //--//Need to detect key presses only. Once that keypress is pressed, it activates the code once.
+        if (Input.GetKeyDown(KeyCode.Alpha8) && shotgunInInventory == true)
         {
+            //anime.SetBool("Pickaxe (Hold)", false);
             aPM.holdShotgun = true;
             Debug.Log("Shotgun equipped");
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
@@ -65,5 +66,14 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             anime.SetBool("Pickaxe (Hold)", true);
             Debug.Log(gameObject + " picked up weapon");
         }
+
+        //if (collision.gameObject.name == "New Dwarf") //add this code to a separate script in the Pickaxe game object. Also delete the OnTriggerEnter2D method and code as well.
+        //{
+        //    anime.SetTrigger("Pickaxe");
+        //    anime.SetBool("Pickaxe (Hold)", true);
+        //    //Debug.Log(gameObject + " picked up weapon");
+        //    Destroy(gameObject);
+        //    Debug.Log(gameObject + " was Picked up");
+        //}
     }
 }
