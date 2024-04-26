@@ -5,22 +5,6 @@ using UnityEngine.XR;
 
 public class DetectShots : MonoBehaviour
 {
-    public ItemPickup aIP;
-    public PlayerMovement aPM;
-
-    public bool inRange; //when i set this to false, the technique does not work. Not sure why.
-    public bool shotgunFired;
-    public bool enemiesInSight;
-    public GameObject[] enemiesInRange;
-    public Collider2D[] enemiesInTheRange;
-    public GameObject closestEnemy;
-
-    // Start is called before the first frame update
-    public void Awake()
-    {
-        //enemiesInRange = new GameObject[30];
-    }
-
     // Update is called once per frame
     void Update()
     {

@@ -79,7 +79,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun)
         {
-            //aDS.shotgunFired = true;
             shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
             aIP.ammoShotgun = aIP.ammoShotgun - 1;//subtract one bullet from gun ammo
@@ -145,10 +144,4 @@ public class PlayerAttack : MonoBehaviour
         }
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.white;
-    //    Gizmos.DrawWireCube(shotgunColliderCenPos, shotgunCollidersize/4); //this method takes in Vector3 parameters so not sure if it is a correct depiction. Dividing by 4 makes it accurately shaped.
-    //}
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-//This class was called first
-
 public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the script and class
 {
     public bool holdShotgun = false;
@@ -28,12 +26,9 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
 
     // Update is called when input is recieved.---- WRONG, it is called every frame
     //-Update function is called in every frame
-
     //--//--//--//--//--//--//--//--//
     public void Update()
     {
-        
-
         //handles walking left to right
         float horizontalInput = Input.GetAxis("Horizontal"); //-Input.GetAxis("Horizontal") equals either -1 or 1, representing either left or right direction
                                                              //-So horizontalInput would equal either -1 or 1
@@ -48,7 +43,6 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
         {
             transform.localScale = new Vector3(-.25f, .25f, .25f);//-move left
         }
-
 
         //Checks for a space bar input and if our player is standing on a ground for a jump action
         if ((Input.GetKey(KeyCode.Space) && grounded) && holdShotgun)

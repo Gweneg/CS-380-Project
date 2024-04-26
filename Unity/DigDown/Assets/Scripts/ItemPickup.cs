@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemPickup : MonoBehaviour //gameObject in this case would be the player or the pickaxe, but not my shotgun because shotgun object doesnt have this script
+public class ItemPickup : MonoBehaviour
 {
     public PlayerMovement aPM; //-forgot what exactly PM is labelled as. Will be used to reference variables from the PlayerMovement script(aka class)
     public GameObject GUNCONTAINER;//parent object
@@ -24,8 +24,6 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
     }
 
     // Update is called once per frame
-
-    /////////////////////////////////////////////////////////////////////////
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha7) && pickaxeInInventory == true) 
@@ -51,7 +49,6 @@ public class ItemPickup : MonoBehaviour //gameObject in this case would be the p
             SHOTGUN.transform.localScale = Vector3.one;//^^^
         }
     }
-    /////////////////////////////////////////////////////////////////////////
 
     //public void OnTriggerEnter2D(Collider2D collision) //This plays when the object collides with something with an active collider trigger. 
     //{
