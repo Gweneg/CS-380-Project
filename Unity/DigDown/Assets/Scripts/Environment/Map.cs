@@ -47,8 +47,13 @@ namespace Environment
 			{5, new TileType(typeID: 5, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
 			{6, new TileType(typeID: 6, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
 			{7, new TileType(typeID: 7, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
-			{8, new TileType(typeID: 8, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)},       // Void.
-			{9, new TileType(typeID: 9, spriteID: 10, durabilityMax: 20, durabilityHardness: 255, isSolid: true)}  	  //iron
+			{8, new TileType(typeID: 8, spriteID: 9, durabilityMax: 255, durabilityHardness: 1, isSolid: true)},      // Void.
+			{9, new TileType(typeID: 9, spriteID: 10, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},	  // Iron
+			{10, new TileType(typeID: 10, spriteID: 11, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},  // Copper
+			{11, new TileType(typeID: 11, spriteID: 12, durabilityMax: 30, durabilityHardness: 255, isSolid: true)},  // Silver
+			{12, new TileType(typeID: 12, spriteID: 13, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},  // Gold
+			{13, new TileType(typeID: 13, spriteID: 14, durabilityMax: 80, durabilityHardness: 255, isSolid: true)}  // Diamond
+			
 		};
 		/// <summary>
 		/// The instances of tiles for the current map.
@@ -303,23 +308,53 @@ namespace Environment
 
 		//Changes a random tile from the map into a tile of another type
 		//
-		public void ChangeTile()
+		public void ChangeTile(ushort Id, int repetitions)
 		{
 			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
-			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
-			                                                     .Select(tileType => new TileInstance(tileType.Value))
-			                                                     .ToDictionary(tileInstance => tileInstance.TypeID);
+			Dictionary<ushort, TileInstance> tileInstanceCopies = 	
+			TileTypes.Select(tileType => new TileInstance(tileType.Value)).ToDictionary(tileInstance => tileInstance.TypeID);
+
 			//Get random coordinates from the Map
-			int randomX = UnityEngine.Random.Range(0, (int)MapWidth);
-			int randomY = UnityEngine.Random.Range(0, (int)MapHeight - (int)MapHeight/4);
+			int randomX = 0;
+			int randomY = 0;
+			for (int i = 0; i <= repetitions; i++)
+			{
+				randomX = UnityEngine.Random.Range(0, (int)MapWidth);
+				randomY = UnityEngine.Random.Range(0, (int)MapHeight - (int)MapHeight / 4);
+				switch (Id)
+				{
+					case 255: //air
+						
+						TileInstance airTile = tileInstanceCopies[Id];
+						InstanceTiles[randomY, randomX].Set(airTile);
+						break;
+					case 9://iron
 
-			// Get the current tile instance at the random coordinates
-			TileInstance airTile = tileInstanceCopies[255]; //air
-			TileInstance ironTile = tileInstanceCopies[9]; //iron
+						TileInstance ironTile = tileInstanceCopies[Id]; 
+						InstanceTiles[randomY, randomX].Set(ironTile);
+						break;
+					case 10://copper
 
-			// Update the tile instance with the new tile type
-			InstanceTiles[randomY, randomX].Set(airTile);
-			InstanceTiles[randomY, randomX].Set(ironTile);
+						TileInstance copperTile = tileInstanceCopies[Id]; 
+						InstanceTiles[randomY, randomX].Set(copperTile);
+						break;
+					case 11://Silver
+
+						TileInstance silverTile = tileInstanceCopies[Id]; 
+						InstanceTiles[randomY, randomX].Set(silverTile);
+						break;
+					case 12://Gold
+
+						TileInstance goldTile = tileInstanceCopies[Id]; 
+						InstanceTiles[randomY, randomX].Set(goldTile);
+						break;
+					case 13://Gold
+
+						TileInstance diamondTile = tileInstanceCopies[Id]; 
+						InstanceTiles[randomY, randomX].Set(diamondTile);
+						break;
+				}
+			}
 		}
 
 
@@ -393,9 +428,12 @@ namespace Environment
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort) tileID]);
 				}
 			}
-			for(int i = 0; i < 100; i++){
-				ChangeTile();
-			}
+				ChangeTile(255,80);
+				ChangeTile(9,30);
+				ChangeTile(10,20);
+				ChangeTile(11,16);
+				ChangeTile(12,10);
+				ChangeTile(13,5);
 			
 
 			// Todo: Perform generation
