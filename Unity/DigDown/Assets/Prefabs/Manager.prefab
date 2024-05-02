@@ -65,20 +65,22 @@ MonoBehaviour:
   - id: 8
     sprite: {fileID: -4254908630410942589, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
   - id: 9
-    sprite: {fileID: 6445839120098830099, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
-  - id: 10
-    sprite: {fileID: 21300000, guid: 973c698ab5a8d7c4ab778eb655b595b8, type: 3}
-  - id: 11
-    sprite: {fileID: 21300000, guid: e62f090dee89f204b82d7989f1132d37, type: 3}
-  - id: 12
-    sprite: {fileID: 21300000, guid: 9243fed0eb635a9488f9244cbdbb3c58, type: 3}
-  - id: 13
-    sprite: {fileID: 21300000, guid: 620ee677a019acd4d995403a6c7af1de, type: 3}
-  - id: 14
-    sprite: {fileID: 21300000, guid: 19456cc27c48e224bb716df7809fe947, type: 3}
-  - id: 15
     sprite: {fileID: 21300000, guid: 06ac42705c5f2a140a930593f73af911, type: 3}
+  - id: 10
+    sprite: {fileID: 21300000, guid: 1901c666632bb874cb08323b245cba59, type: 3}
+  - id: 11
+    sprite: {fileID: 6445839120098830099, guid: ce4ba9fcc5948404bbfec9d857010d0d, type: 3}
+  - id: 12
+    sprite: {fileID: 21300000, guid: 973c698ab5a8d7c4ab778eb655b595b8, type: 3}
+  - id: 13
+    sprite: {fileID: 21300000, guid: e62f090dee89f204b82d7989f1132d37, type: 3}
   - id: 14
+    sprite: {fileID: 21300000, guid: 9243fed0eb635a9488f9244cbdbb3c58, type: 3}
+  - id: 15
+    sprite: {fileID: 21300000, guid: 620ee677a019acd4d995403a6c7af1de, type: 3}
+  - id: 16
+    sprite: {fileID: 21300000, guid: 8ddb81dd7922396488868f407c1ec16d, type: 3}
+  - id: 17
     sprite: {fileID: 21300000, guid: 19456cc27c48e224bb716df7809fe947, type: 3}
 --- !u!114 &7672293397219664755
 MonoBehaviour:

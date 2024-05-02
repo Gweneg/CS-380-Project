@@ -403,34 +403,17 @@ namespace Environment
 			// 3. Set the tile in the world
 			InstanceTiles[0, 0].Set(newTileB);
 
-
-			// // Todo: Tidy this up
-			// // Loops over the entire world (starting at bottom left, sweeping all the way to the right, then moving up one block)
-			// for (int row = 0; row < MapHeight; row++)
-			// {
-			// 	// Choose tile type here
-			// 	long tileID = 1;
-
-			// 	for (int column = 0; column < MapWidth; column++)
-			// 	{
-			// 		// Sets the tile to the type chosen above
-			// 		InstanceTiles[row, column].Set(tileInstanceCopies[(ushort)tileID]);
-			// 	}
-			// }
-
-
-			// Todo: Placeholder, replace?
 			// Each layer needs similar amount of rows excluding transition tiles (0,2,4,6)
-			//Sample Output: 7, 7, 7, 7, 6, 5, 5, 5, 5, 4, 3, 3, 3, 3, 2, 1, 1, 1, 1, 0
+			//Sample Output: 9 9 9 9, 8, 7, 7, 7, 7, 6, 5, 5, 5, 5, 4, 3, 3, 3, 3, 2, 1, 1, 1, 1, 0
 			//Note: When adding new environment tiles add them in pairs to avoid changing this code a lot
-			//Todo: Fix calculation to add new tiles to map
-			long mapLayerSize = MapHeight / 4;
+			const long mapLayerSize = 5;
 			for (int row = 0; row < MapHeight; row++)
 			{
 				//Note: Must subtract from odd number or will fill map with transitional tiles instead
-				long tileID = 7 - (row / mapLayerSize) * 2;
+				long layer = Math.Clamp((MapHeight - row - 1)/mapLayerSize, 0, TileTypes.Count()/2);
+				long tileID = 2 * layer + 1;
 				// If we're not the boundary of a layer, make it not a transition tile.
-				if ((row + 1) % mapLayerSize == 0)
+				if ((MapHeight - row - 1) % mapLayerSize == 0)
 				{
 					tileID -= 1;
 				}
@@ -440,7 +423,7 @@ namespace Environment
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort)tileID]);
 				}
 			}
-			ChangeTile(255, 80);
+			ChangeTile(255, 150);
 			ChangeTile(11, 30);
 			ChangeTile(12, 20);
 			ChangeTile(13, 16);
@@ -554,7 +537,7 @@ namespace Environment
 		// METHODS - UNITY
 		private void Start()
 		{
-			ConfigureMap(150, 24);
+			ConfigureMap(150, 28);
 			ConfigureRenderTiles(25, 10);
 			GenerateMap();
 			MoveMap(Vector2.zero);
