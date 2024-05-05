@@ -715,7 +715,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d71dc51ea6ecd4da4457f6d6983f67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holdShotgun: 0
   speed: 10
+  anime: {fileID: 0}
 --- !u!95 &322617154
 Animator:
   serializedVersion: 5
@@ -749,12 +751,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d660d675c8753e41ae2b774fbf1e2e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aIP: {fileID: 0}
+  aPM: {fileID: 0}
+  aDS: {fileID: 0}
   attackCoolDown: 0
+  ENEMY: {fileID: 0}
+  SHOTGUN: {fileID: 0}
+  SHOTGUN_AUDIO_SOURCE: {fileID: 0}
+  shotgunAnimator: {fileID: 0}
+  PLAYER: {fileID: 0}
+  shotgunAudioSource: {fileID: 0}
+  explosionAudioClip: {fileID: 0}
   attackPoint: {fileID: 1843685936}
   attackRange: 0.1
   enemyLayers:
     serializedVersion: 2
     m_Bits: 0
+  shotgunRangeCollider: {fileID: 0}
+  enemiesInRangeArr: []
+  shotgunColliderCenPos: {x: 0, y: 0}
+  shotgunColliderRotation: {x: 0, y: 0, z: 0, w: 0}
+  angleInDegrees: 0
+  shotgunCollidersize: {x: 0, y: 0}
+  centerPosition: {x: 0, y: 0}
+  rotation: 0
+  distance: 0
+  closestDistance: 0
+  closestEnemy: {fileID: 0}
 --- !u!1 &419252210
 GameObject:
   m_ObjectHideFlags: 0
@@ -1906,12 +1929,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d660d675c8753e41ae2b774fbf1e2e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aIP: {fileID: 0}
+  aPM: {fileID: 0}
+  aDS: {fileID: 0}
   attackCoolDown: 0
+  ENEMY: {fileID: 0}
+  SHOTGUN: {fileID: 0}
+  SHOTGUN_AUDIO_SOURCE: {fileID: 0}
+  shotgunAnimator: {fileID: 0}
+  PLAYER: {fileID: 0}
+  shotgunAudioSource: {fileID: 0}
+  explosionAudioClip: {fileID: 0}
   attackPoint: {fileID: 1528416602}
   attackRange: 0.2
   enemyLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
+  shotgunRangeCollider: {fileID: 0}
+  enemiesInRangeArr: []
+  shotgunColliderCenPos: {x: 0, y: 0}
+  shotgunColliderRotation: {x: 0, y: 0, z: 0, w: 0}
+  angleInDegrees: 0
+  shotgunCollidersize: {x: 0, y: 0}
+  centerPosition: {x: 0, y: 0}
+  rotation: 0
+  distance: 0
+  closestDistance: 0
+  closestEnemy: {fileID: 0}
 --- !u!114 &779510115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1924,7 +1968,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d71dc51ea6ecd4da4457f6d6983f67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holdShotgun: 0
   speed: 6
+  anime: {fileID: 0}
 --- !u!114 &779510116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1937,6 +1983,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6989a06fb575b942a8d9edd2e109f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aPM: {fileID: 0}
+  GUNCONTAINER: {fileID: 0}
+  SHOTGUN: {fileID: 0}
+  anime: {fileID: 0}
+  ammoShotgun: 0
+  pickaxeInInventory: 0
+  shotgunInInventory: 0
 --- !u!114 &779510117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1952,7 +2005,7 @@ MonoBehaviour:
   digCoolDown: 0
   terrainLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   digPoint: {fileID: 646030013}
   digRange: 0.25
 --- !u!1 &787464075
@@ -2986,7 +3039,7 @@ Transform:
   m_GameObject: {fileID: 1427708584}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.9659258, w: 0.2588191}
-  m_LocalPosition: {x: -8.94, y: -1.47, z: 0}
+  m_LocalPosition: {x: -8.21, y: -0.91, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3004,6 +3057,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6989a06fb575b942a8d9edd2e109f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aPM: {fileID: 0}
+  GUNCONTAINER: {fileID: 0}
+  SHOTGUN: {fileID: 0}
+  anime: {fileID: 0}
+  ammoShotgun: 0
+  pickaxeInInventory: 0
+  shotgunInInventory: 0
 --- !u!1 &1528416601
 GameObject:
   m_ObjectHideFlags: 0

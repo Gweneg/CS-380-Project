@@ -107,7 +107,7 @@ public class PlayerAttack : MonoBehaviour
             closestDistance = 500; //reset the closest distance value.
             Destroy(closestEnemy);
             enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
-            Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
+            //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
         }
         else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun)
         {
