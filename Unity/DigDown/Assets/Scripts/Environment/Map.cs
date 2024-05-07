@@ -308,8 +308,24 @@ namespace Environment
 			return _mapOffset + new Vector2(xCoordinate, yCoordinate) * TileSize;
 		}
 
+		//Checks if tile at speficied coordinates is an air tile
+		public bool IsAirTileAtCoordinates(uint x, uint y)
+		{
+			// Check if the coordinates are within the map bounds
+			if (x >= MapWidth || y >= MapHeight)
+			{
+				Debug.LogError("Coordinates are out of map bounds!");
+				return false;
+			}
+
+			// Get the tile instance at the specified coordinates
+			TileInstance tileInstance = InstanceTiles[y, x];
+
+			// Check if the tile type ID corresponds to an air tile
+			return tileInstance.TypeID == 255;
+		}
+
 		//Changes a random tile from the map into a tile of another type
-		//
 		public void ChangeTile(ushort Id, int repetitions)
 		{
 			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
@@ -319,6 +335,7 @@ namespace Environment
 			//Get random coordinates from the Map
 			int randomX = 0;
 			int randomY = 0;
+
 			for (int i = 0; i <= repetitions; i++)
 			{
 				randomX = UnityEngine.Random.Range(0, (int)MapWidth);
@@ -332,33 +349,57 @@ namespace Environment
 						break;
 					case 11://iron
 
-						TileInstance ironTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(ironTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance ironTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(ironTile);
+						}else{
+							ChangeTile(11,1);
+						}
 						break;
 					case 12://copper
 
-						TileInstance copperTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(copperTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance copperTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(copperTile);
+						}else{
+							ChangeTile(12,1);
+						}
 						break;
 					case 13://Silver
 
-						TileInstance silverTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(silverTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance silverTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(silverTile);
+						}else{
+							ChangeTile(13,1);
+						}
 						break;
 					case 14://Gold
 
-						TileInstance goldTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(goldTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance goldTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(goldTile);
+						}else{
+							ChangeTile(14,1);
+						}
 						break;
-					case 15://Gold
+					case 15://Diamond
 
-						TileInstance diamondTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(diamondTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance diamondTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(diamondTile);
+						}else{
+							ChangeTile(15,1);
+						}
 						break;
 					case 16://Azurite
 
-						TileInstance azuriteTile = tileInstanceCopies[Id];
-						InstanceTiles[randomY, randomX].Set(azuriteTile);
+						if(!IsAirTileAtCoordinates((uint)randomX, (uint)randomY)){
+							TileInstance azuriteTile = tileInstanceCopies[Id];
+							InstanceTiles[randomY, randomX].Set(azuriteTile);
+						}else{
+							ChangeTile(16,1);
+						}
 						break;
 				}
 			}
@@ -423,6 +464,26 @@ namespace Environment
 					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort)tileID]);
 				}
 			}
+
+			//Generate a long cave randomly in the map
+			int startX = 0;
+			int startY = 0;
+
+			for (int i = 0; i < 6; i++)
+			{
+				startX = UnityEngine.Random.Range(1, (int)MapWidth-35);
+				startY = UnityEngine.Random.Range(4, (int)MapHeight - (int)MapHeight / 4);
+				for (int y = startY; y < startY + 4 && y < MapHeight; y++)
+				{
+					for (int x = startX; x < startX + 35 && x < MapWidth; x++)
+					{
+						// Get the tile instance corresponding to the new tile ID.
+						TileInstance airTile = tileInstanceCopies[255];
+						// Set the tile instance at the current coordinates to the new tile.
+						InstanceTiles[y, x].Set(airTile);
+					}
+				}
+			}
 			ChangeTile(255, 150);
 			ChangeTile(11, 30);
 			ChangeTile(12, 20);
@@ -430,7 +491,6 @@ namespace Environment
 			ChangeTile(14, 10);
 			ChangeTile(15, 5);
 			ChangeTile(16, 5);
-
 
 			// Todo: Perform generation
 			// Todo: Perform point-of-interest (caves, loot, etc.) generation
@@ -537,7 +597,7 @@ namespace Environment
 		// METHODS - UNITY
 		private void Start()
 		{
-			ConfigureMap(150, 28);
+			ConfigureMap(200, 24);
 			ConfigureRenderTiles(25, 10);
 			GenerateMap();
 			MoveMap(Vector2.zero);
