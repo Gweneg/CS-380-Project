@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the script and class
+public class PlayerMovement : MonoBehaviour
 {
     public bool holdShotgun = false;
     [SerializeField] private float speed;
     private Rigidbody2D body; //-variable to reference the RigidBody component
-    public Animator anime; //-variable to reference the Animator component //- was private
+    public Animator anime; //- was private
     private bool grounded;
 
     // Awake is called at the start
     public void Awake() //- check what exactly this function does
     {
-        body = GetComponent<Rigidbody2D>(); //-check the difference between this line vs a variable of type Rigidbody2D used to change component settings.
-        anime = GetComponent<Animator>(); //- body and anime are component reference variables
+        body = GetComponent<Rigidbody2D>();
+        anime = GetComponent<Animator>(); 
     }
 
     void Start()
@@ -24,16 +24,11 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
     UnityEngine.Debug.Log("PlayerMovement class called");
     }
 
-    // Update is called when input is recieved.---- WRONG, it is called every frame
     //-Update function is called in every frame
-    //--//--//--//--//--//--//--//--//
     public void Update()
     {
         //handles walking left to right
-        float horizontalInput = Input.GetAxis("Horizontal"); //-Input.GetAxis("Horizontal") equals either -1 or 1, representing either left or right direction
-                                                             //-So horizontalInput would equal either -1 or 1
-                                                             //-Value increases as you hold down input, decreases once you let go, back to 0.
-        //Debug.Log("horizontal input current value is " + horizontalInput); //-
+        float horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
         //flips the sprite based on if walking left or right
         if(horizontalInput > 0.01f)
@@ -55,11 +50,10 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
         }
 
         //starts a running animation
-        anime.SetBool("Run", horizontalInput != 0); //-Run animation automatically plays when horizontalInput is anything but 0. 
+        anime.SetBool("Run", horizontalInput != 0); 
         //lets the animations know the player is on the ground
         anime.SetBool("Grounded", grounded); //-Grounded parameter automatically changes. At all times it'll either be grounded or not grounded.
     }
-    //--//--//--//--//--//--//--//--//
 
     //handles the Jump command
     private void Jump()
@@ -86,7 +80,6 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
         }
     }
     //checks to see if the player is capable of attacking
-    //-
     public bool canAttack()
     {
         return true;

@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     public ItemPickup aIP; //-reference variable to the ItemPickup class
-    public PlayerMovement aPM; //-reference variable to the ItemPickup class - important, keep watch if this works well
+    public PlayerMovement aPM; //-reference variable to the PlayerMovement class - important, keep watch if this works well
     public DetectShots aDS; //-reference variable to the DetectShot class
 
     [SerializeField] private float attackCoolDown;
@@ -20,8 +20,8 @@ public class PlayerAttack : MonoBehaviour
     public Animator shotgunAnimator; //component variable
     public GameObject PLAYER;
 
-    public AudioSource shotgunAudioSource;//component variable
-    public AudioClip explosionAudioClip;//component varibale - assign the audio clip you want to play to the explosionAudioClip field in the Inspector
+    public AudioSource shotgunAudioSource;
+    public AudioClip explosionAudioClip;
 
     private PlayerMovement playerMovement; //-reference variable to the ItemPickup class
     private float coolDownTimer = Mathf.Infinity;
@@ -39,16 +39,12 @@ public class PlayerAttack : MonoBehaviour
     public float angleInDegrees;//HERE
     public Vector2 shotgunCollidersize; //HERE
 
-    //oo GOAL: make a rectangle for the OverLapBox, then make it visible.
     public Vector2 centerPosition;//oo
     public float rotation; //oo
 
     public float distance;
     public float closestDistance;
     public GameObject closestEnemy;
-    //public Vector3 playerCenterPosition;
-
-    
 
     // Awake is called before the first frame update
     private void Awake()
@@ -71,7 +67,7 @@ public class PlayerAttack : MonoBehaviour
         shotgunRangeCollider = SHOTGUN.GetComponent<BoxCollider2D>(); //HERE
         shotgunCollidersize = shotgunRangeCollider.size; //we obtained the size of the shotgun's 2D box collider.
 
-        Debug.Log("The shotgun's 2D box collider size is " + shotgunCollidersize); //CORRECT SIZE GETS OUTPUTTED.
+        Debug.Log("The shotgun's 2D box collider size is " + shotgunCollidersize);
         Debug.Log("The shotgun's 2D box collider position is " + shotgunColliderCenPos);
     }
     // Update registers user input
@@ -79,7 +75,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun)
         {
-            shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
+            shotgunAnimator.Play("Shotgun Firing", 0, 0f);//** Everytime the condition is met above, the shoot animation will restart.
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
             aIP.ammoShotgun = aIP.ammoShotgun - 1;//subtract one bullet from gun ammo
 
@@ -106,8 +102,7 @@ public class PlayerAttack : MonoBehaviour
             }
             closestDistance = 500; //reset the closest distance value.
             Destroy(closestEnemy);
-            enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
-            //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
+            enemiesInRangeArr = new Collider2D[0]; //-empty out the array for reuse. //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
         }
         else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun)
         {

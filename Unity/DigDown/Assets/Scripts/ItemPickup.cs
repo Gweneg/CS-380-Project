@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public PlayerMovement aPM; //-forgot what exactly PM is labelled as. Will be used to reference variables from the PlayerMovement script(aka class)
+    public PlayerMovement aPM; //- Used to access variables/components from PlayerMovement script(aka class)
     public GameObject GUNCONTAINER;//parent object
     public GameObject SHOTGUN;//child object
 
-    //public LayerMask childLayerMask;
-
-    public Animator anime; //-component variable //-was private
+    public Animator anime; //-was private
     public int ammoShotgun;
     public bool pickaxeInInventory;
     public bool shotgunInInventory;
@@ -49,6 +47,9 @@ public class ItemPickup : MonoBehaviour
             SHOTGUN.transform.localScale = Vector3.one;//^^^
         }
     }
+
+
+    //-Added the trigger collision code for the pickaxe in a separate script within the pickaxe.
 
     //public void OnTriggerEnter2D(Collider2D collision) //This plays when the object collides with something with an active collider trigger. 
     //{
