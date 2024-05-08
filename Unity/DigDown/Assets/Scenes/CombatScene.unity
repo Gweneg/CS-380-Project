@@ -5481,7 +5481,7 @@ MonoBehaviour:
   digCoolDown: 1
   terrainLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 4096
   digPoint: {fileID: 1449912744}
   digRange: 0.1
 --- !u!1 &2112600384
