@@ -83,6 +83,11 @@ public class PlayerAttack : MonoBehaviour
     // Update registers user input
     public void Update() //- was private
     {
+        //PROBLEM: one right click with my wireless mouse acts as if it clicked 10+ times.
+        //Doesn't occur with mousepad right click.
+        //If problem persists, change shotgun firing input to be Input.GetKeyDown(KeyCode.K).
+        //Problem probably doesn't occur with the Mining right click.
+
         if (Input.GetMouseButton(1) && aIP.ammoShotgun > 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
             shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
