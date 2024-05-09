@@ -6,20 +6,20 @@ using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class enemyAi : MonoBehaviour
+public class BigEnemyAi : MonoBehaviour
 {
-    
-    public float HP = 6;
-   
+
+    public float HP = 9;
+
     //public bool isJumping;
     void Start()
-    { 
+    {
 
     }
     //flip sprite
     private void Awake()
     {
-        
+
     }
     void Update()
     {
@@ -28,5 +28,5 @@ public class enemyAi : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
+
 }

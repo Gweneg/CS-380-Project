@@ -8,8 +8,9 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
 
-
+    public SmallEnemyAi aSEA;
     public enemyAi aEA;
+    public BigEnemyAi aBEA;
 
     public ItemPickup aIP; //-reference variable to the ItemPickup class
     public PlayerMovement aPM; //-reference variable to the ItemPickup class - important, keep watch if this works well
@@ -123,8 +124,27 @@ public class PlayerAttack : MonoBehaviour
 
             if (closestEnemy != null)
             {
-                aEA = closestEnemy.GetComponent<enemyAi>(); //want to access the enemyAi script for that specific enemy at this point in time
-                aEA.HP = aEA.HP - 3;
+                //*** if the game object doesnt have the enemyAi script,
+                //check if it has the enemyAi2 script, if it doesn't, check if it has the enemyAi3 script
+                if (closestEnemy.GetComponent<SmallEnemyAi>() != null) //if closestEnemy has the SmallEnemyAi script...
+                {
+                    aSEA = closestEnemy.GetComponent<SmallEnemyAi>();
+                    aSEA.HP = aSEA.HP - 3;
+                }
+                else if (closestEnemy.GetComponent<enemyAi>() != null) //if closestEnemy has the enemyAi script (medium)...
+                {
+                    aEA = closestEnemy.GetComponent<enemyAi>();
+                    aEA.HP = aEA.HP - 3;
+                }
+                else if (closestEnemy.GetComponent<BigEnemyAi>() != null) //if closestEnemy has the BigEnemyAi script...
+                {
+                    aBEA = closestEnemy.GetComponent<BigEnemyAi>();
+                    aBEA.HP = aBEA.HP - 3;
+                }
+                ////////
+
+                //aEA = closestEnemy.GetComponent<enemyAi>(); //want to access the enemyAi script for that specific enemy at this point in time
+                //aEA.HP = aEA.HP - 3;
                 //-Destroy(closestEnemy);
                 ////////////////////////////////////////////
                 enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
