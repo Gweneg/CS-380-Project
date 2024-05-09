@@ -408,13 +408,13 @@ namespace Environment
 			InstanceTiles[0, 0].Set(newTileB);
 
 			// Each layer needs similar amount of rows excluding transition tiles (0,2,4,6)
-			//Sample Output: 9 9 9 9, 8, 7, 7, 7, 7, 6, 5, 5, 5, 5, 4, 3, 3, 3, 3, 2, 1, 1, 1, 1, 0
-			//Note: When adding new environment tiles add them in pairs to avoid changing this code a lot
+			//Sample Output: 9 9 9 9, 8, 7 7 7 7, 6, 5 5 5 5, 4, 3 3 3 3, 2, 1 1 1 1, 0
+			// Note: When adding new environment tiles add them in pairs to avoid changing this code a lot
 			const uint mapLayerSize = 20; // The size (in rows) of each layer.
 			const uint mapLayerCount = 6; // The number of layers.
 			for (uint row = 0; row < MapHeight; row++)
 			{
-				//Note: Must subtract from odd number or will fill map with transitional tiles instead
+				// Note: Must subtract from odd number or will fill map with transitional tiles instead
 				uint distanceFromSurface = MapHeight - row - 1;
 				// Compute the current layer.
 				uint layerCurrent = distanceFromSurface / mapLayerSize;
@@ -890,9 +890,15 @@ namespace Environment
 		private static Camera _mainCamera;
 		private static bool _isPanning;
 		private static Vector2 _panPosition;
+		private bool _isDebugCameraMoveEnabled;
 		private void Update()
 		{
-			// TODO: DEBUG/DEMONSTRATION CODE, REMOVE
+			if (_isDebugCameraMoveEnabled)
+				DoDebugCameraMovement();
+		}
+
+		private void DoDebugCameraMovement()
+		{
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 			{
 				_mainCamera = Camera.main;
