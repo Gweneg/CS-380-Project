@@ -7,6 +7,10 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+
+
+    public enemyAi aEA;
+
     public ItemPickup aIP; //-reference variable to the ItemPickup class
     public PlayerMovement aPM; //-reference variable to the ItemPickup class - important, keep watch if this works well
     public DetectShots aDS; //-reference variable to the DetectShot class
@@ -19,6 +23,7 @@ public class PlayerAttack : MonoBehaviour
     public GameObject SHOTGUN_AUDIO_SOURCE; //**
     public Animator shotgunAnimator; //component variable
     public GameObject PLAYER;
+
 
     public AudioSource shotgunAudioSource;//component variable
     public AudioClip explosionAudioClip;//component varibale - assign the audio clip you want to play to the explosionAudioClip field in the Inspector
@@ -53,6 +58,7 @@ public class PlayerAttack : MonoBehaviour
     // Awake is called before the first frame update
     private void Awake()
     {
+
         closestDistance = 500;
         ENEMY = GameObject.Find("enemy1");
 
@@ -82,6 +88,8 @@ public class PlayerAttack : MonoBehaviour
             shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
             aIP.ammoShotgun = aIP.ammoShotgun - 1;//subtract one bullet from gun ammo
+            Debug.Log("ammo value is " + aIP.ammoShotgun);
+
 
             shotgunColliderCenPos = shotgunRangeCollider.bounds.center; //need to obtain the CURRENT center position of the shotgun box collider.
             shotgunColliderRotation = shotgunRangeCollider.transform.rotation; //need to obtain the CURRENT rotation of the shotgun box collider.
@@ -105,9 +113,18 @@ public class PlayerAttack : MonoBehaviour
                 }
             }
             closestDistance = 500; //reset the closest distance value.
-            Destroy(closestEnemy);
-            enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
-            //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
+            ////////////////////////////////////////////
+            ///instead of destroying the game object, the shotgun will now subtract 3 HP from singular enemies
+
+            if (closestEnemy != null)
+            {
+                aEA = closestEnemy.GetComponent<enemyAi>(); //want to access the enemyAi script for that specific enemy at this point in time
+                aEA.HP = aEA.HP - 3;
+                //-Destroy(closestEnemy);
+                ////////////////////////////////////////////
+                enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
+                                                       //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
+            }
         }
         else if (Input.GetMouseButton(1) && aIP.ammoShotgun <= 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
