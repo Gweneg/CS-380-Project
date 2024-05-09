@@ -562,6 +562,54 @@ ScriptedImporter:
         width: 8
         height: 8
       spriteId: aa01eee9263fb4a46b5ea32a606f733b
+    - name: Tiles_Frame_9
+      frameIndex: 9
+      cellRect:
+        x: 0
+        y: 0
+        width: 8
+        height: 7
+      spriteId: 5cfcd5aa6a6bdc5478dce56dd29f5301
+    - name: Tiles_Frame_10
+      frameIndex: 10
+      cellRect:
+        x: 0
+        y: 0
+        width: 8
+        height: 8
+      spriteId: c2bdab42a305c2e4fbba90270f75bc2e
+    - name: Tiles_Frame_11
+      frameIndex: 11
+      cellRect:
+        x: 0
+        y: 0
+        width: 8
+        height: 8
+      spriteId: 4c2a7b957f3dc434991e2f8e67c3b4d5
+    - name: Tiles_Frame_12
+      frameIndex: 12
+      cellRect:
+        x: 0
+        y: 0
+        width: 7
+        height: 8
+      spriteId: 595c95df999ee774fa2754683ee751a5
+    - name: Tiles_Frame_13
+      frameIndex: 13
+      cellRect:
+        x: 0
+        y: 0
+        width: 8
+        height: 8
+      spriteId: 57e5344887fdbe14291a9b5601c7d051
+    - name: Tiles_Frame_14
+      frameIndex: 14
+      cellRect:
+        x: 0
+        y: 0
+        width: 8
+        height: 8
+      spriteId: 90f86f2e07ef91740aba0a1e6afdb0ec
     linkedCells: []
     parentIndex: -1
   platformSettings:
