@@ -14,6 +14,7 @@ public class ItemPickup : MonoBehaviour
     public int ammoShotgun;
     public bool pickaxeInInventory;
     public bool shotgunInInventory;
+    public bool holdPickaxe = false;
 
     // Start is called before the first frame update
     public void Start()
@@ -28,6 +29,7 @@ public class ItemPickup : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha7) && pickaxeInInventory == true) 
         {
+            holdPickaxe = true;
             Debug.Log("Pickaxe equipped");
             //anime.SetTrigger("Pickaxe");
             anime.SetBool("Pickaxe (Hold)", true);
@@ -37,6 +39,7 @@ public class ItemPickup : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha8) && shotgunInInventory == true)
         {
+            holdPickaxe = false;
             Debug.Log("Shotgun equipped");
             anime.SetBool("Pickaxe (Hold)", false);
             aPM.holdShotgun = true;

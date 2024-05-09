@@ -77,7 +77,7 @@ public class PlayerAttack : MonoBehaviour
     // Update registers user input
     public void Update() //- was private
     {
-        if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun)
+        if (Input.GetMouseButton(1) && aIP.ammoShotgun > 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
             shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
@@ -109,7 +109,7 @@ public class PlayerAttack : MonoBehaviour
             enemiesInRangeArr = new Collider2D[0]; //empty out the array for reuse.
             //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
         }
-        else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun)
+        else if (Input.GetMouseButton(1) && aIP.ammoShotgun <= 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
             aPM.holdShotgun = false;
             anime.SetBool("HoldShotgun", aPM.holdShotgun);

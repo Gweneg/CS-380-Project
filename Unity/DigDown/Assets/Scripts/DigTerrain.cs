@@ -8,7 +8,7 @@ using UnityEngine;
 public class DigTerrain : MonoBehaviour
 {
     [SerializeField] private float digCoolDown;
-    //private Animator anime;
+    public Animator anime; //was commented out //was private
     private PlayerMovement playerMovement;
     private float coolDownTimer = Mathf.Infinity;
     public LayerMask terrainLayers;
@@ -17,16 +17,23 @@ public class DigTerrain : MonoBehaviour
     private Vector3 mousePos;
     private Camera mainCam;
     private GameObject block;
+
+    public GameObject PLAYER;
+    public bool isDigging = false;
+    public AnimatorStateInfo DigState;
+    public ItemPickup aIP;
+
     // Start is called before the first frame update
-    void Awake()
+    public void Awake() //was not private or public (blank)
     {
-        //anime = GetComponent<Animator>();
+        PLAYER = GameObject.Find("New Dwarf");
+        anime = PLAYER.GetComponent<Animator>(); //was commented out
         playerMovement = GetComponent<PlayerMovement>();
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update() //was blank
     {
         mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 rotation = mousePos - transform.position;
@@ -37,12 +44,14 @@ public class DigTerrain : MonoBehaviour
         if (transform.parent.localScale.x > 0){
             transform.rotation = Quaternion.Euler(0, 0, rotZ);
         }
-        if(Input.GetMouseButton(1) && coolDownTimer > digCoolDown){
+
+        if(Input.GetMouseButton(1) && coolDownTimer > digCoolDown && aIP.holdPickaxe == true){ //original code //if(Input.GetMouseButton(1) && coolDownTimer > digCoolDown)
+            anime.SetTrigger("DigTrig");
             Dig();
         }
         coolDownTimer += Time.deltaTime;
     }
-    private void Dig(){
+    public void Dig(){ //was private
         Collider2D[] dugTerrain = Physics2D.OverlapCircleAll(digPoint.position, digRange, terrainLayers);
         coolDownTimer = 0;
         foreach(Collider2D terrain in dugTerrain){
