@@ -27,7 +27,7 @@ public class ItemPickup : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha7) && pickaxeInInventory == true) 
+        if (Input.GetKeyDown(KeyCode.Alpha1) && pickaxeInInventory == true) 
         {
             holdPickaxe = true;
             Debug.Log("Pickaxe equipped");
@@ -37,7 +37,7 @@ public class ItemPickup : MonoBehaviour
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
             SHOTGUN.SetActive(false); //ONLY hide the shotgun that is in players hand
         }
-        if (Input.GetKeyDown(KeyCode.Alpha8) && shotgunInInventory == true)
+        if (Input.GetKeyDown(KeyCode.Alpha2) && shotgunInInventory == true)
         {
             holdPickaxe = false;
             Debug.Log("Shotgun equipped");
@@ -52,28 +52,4 @@ public class ItemPickup : MonoBehaviour
             SHOTGUN.transform.localScale = Vector3.one;//^^^
         }
     }
-
-    //public void OnTriggerEnter2D(Collider2D collision) //This plays when the object collides with something with an active collider trigger. 
-    //{
-    //    if (collision.tag == "Player")
-    //    {
-    //        Destroy(gameObject);
-    //        Debug.Log(gameObject + " was Picked up");
-    //    }
-    //    if (collision.tag == "Weapon")
-    //    {
-    //        anime.SetTrigger("Pickaxe");
-    //        anime.SetBool("Pickaxe (Hold)", true);
-    //        Debug.Log(gameObject + " picked up weapon");
-    //    }
-
-    //    //if (collision.gameObject.name == "New Dwarf") //add this code to a separate script in the Pickaxe game object. Also delete the OnTriggerEnter2D method and code as well.
-    //    //{
-    //    //    anime.SetTrigger("Pickaxe");
-    //    //    anime.SetBool("Pickaxe (Hold)", true);
-    //    //    //Debug.Log(gameObject + " picked up weapon");
-    //    //    Destroy(gameObject);
-    //    //    Debug.Log(gameObject + " was Picked up");
-    //    //}
-    //}
 }

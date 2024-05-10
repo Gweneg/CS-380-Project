@@ -8,8 +8,16 @@ using UnityEngine.AI;
 
 public class enemyAi : MonoBehaviour
 {
+
+    public Transform target;
+
+    public float followSpeed = 5f;
+
+
+
     public CircleCollider2D enemyCircleCol;
     public BoxCollider2D enemyBoxCol;
+
 
 
     public PlayerAttack aPA;
@@ -41,7 +49,6 @@ public class enemyAi : MonoBehaviour
     public GameObject enemy;
     public GameObject player;
 
-    //public Transform target;
 
     public Rigidbody2D rb;
     public SpriteRenderer spriteRenderer;
@@ -70,61 +77,86 @@ public class enemyAi : MonoBehaviour
     }
     void Update()
     {
-        //flip sprite
         float horizontalInput = Input.GetAxis("Horizontal");
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-        if (horizontalInput > 0.01f)
-        {
-            dir = Vector3.right;
-        }
-        else if (horizontalInput < -0.01f)
-        {
-            dir = Vector3.left;
-        }
-      
-        isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, groundLayer);
-        lastTimeAttack = -coolDownTimer;
 
-        //if player is detected, then follow the player
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
-
-        if (distanceToPlayer <= stoppingDistance)
+        if (target != null)
         {
-            followPlayer = true;
-        }
-        else
-        {
-            followPlayer = false;
-        }
+            Vector2 direction = target.position - transform.position;
+            direction.Normalize();
 
-        if (followPlayer)
-        {
-            Vector3 direction = (player.transform.position - transform.position).normalized;
-            transform.position += speed * Time.deltaTime * direction;
-            //test flip
-            if (direction.x > 0)
-            {
-                spriteRenderer.flipX = false;
-                GetComponent<CircleCollider2D>().offset = new Vector2(0.2f, GetComponent<CircleCollider2D>().offset.y);
-
+            if (direction.x > 0) {
+                spriteRenderer.flipX = false; // Face right
+            } else if (direction.x < 0) {
+                spriteRenderer.flipX = true; // Face left
             }
-            else if (direction.x < 0)
-            {
-                spriteRenderer.flipX = true;
-                GetComponent<CircleCollider2D>().offset = new Vector2(-0.2f, GetComponent<CircleCollider2D>().offset.y);
-            }
-        }
-        //if not follwing the player, patrol
-        if (!followPlayer)
-        {
-            Patrol();
-        }
-        //if the player is within the circle collider, attack
-        if (Time.time - lastTimeAttack >= coolDownTimer)
-        {
-            Debug.Log("distance to player value is " + distanceToPlayer);
+
+
+            //if (horizontalInput > 0.01f)
+            //{
+            //    dir = Vector3.left;
+            //}
+            //else if (horizontalInput < -0.01f)
+            //{
+            //    dir = Vector3.right;
+            //}
+            transform.position += (Vector3)direction * followSpeed * Time.deltaTime;
 
         }
+
+
+
+
+        ////flip sprite
+        //float horizontalInput = Input.GetAxis("Horizontal");
+        //body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+        //if (horizontalInput > 0.01f)
+        //{
+        //    dir = Vector3.right;
+        //}
+        //else if (horizontalInput < -0.01f)
+        //{
+        //    dir = Vector3.left;
+        //}
+
+        //isGrounded = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, groundLayer);
+        //lastTimeAttack = -coolDownTimer;
+
+        ////if player is detected, then follow the player
+        //float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+
+        //if (distanceToPlayer <= stoppingDistance)
+        //{
+        //    followPlayer = true;
+        //}
+        //else
+        //{
+        //    followPlayer = false;
+        //}
+
+        //if (followPlayer)
+        //{
+        //    Vector3 direction = (player.transform.position - transform.position).normalized;
+        //    transform.position += speed * Time.deltaTime * direction;
+        //    //test flip
+        //    if (direction.x > 0)
+        //    {
+        //        spriteRenderer.flipX = false;
+        //        GetComponent<CircleCollider2D>().offset = new Vector2(0.2f, GetComponent<CircleCollider2D>().offset.y);
+
+        //    }
+        //    else if (direction.x < 0)
+        //    {
+        //        spriteRenderer.flipX = true;
+        //        GetComponent<CircleCollider2D>().offset = new Vector2(-0.2f, GetComponent<CircleCollider2D>().offset.y);
+        //    }
+        //}
+
+        ////if the player is within the circle collider, attack
+        //if (Time.time - lastTimeAttack >= coolDownTimer)
+        //{
+        //Debug.Log("distance to player value is " + distanceToPlayer);
+
+        //}
         //if the player damages the enemy to HP = 0, die
         if (HP < 1)
         {
@@ -161,7 +193,7 @@ public class enemyAi : MonoBehaviour
             {
                 dir = Vector3.right;
             }
-            else if (dir == Vector3.right) 
+            else if (dir == Vector3.right)
             {
                 dir = Vector3.left;
             }
@@ -172,11 +204,6 @@ public class enemyAi : MonoBehaviour
             Jump();
             isGrounded = false;
         }
-
-        //if (collision.CompareTag("enemy"))
-        //{
-        //    HP = HP - .1f;
-        //}
 
 
         //--
@@ -200,33 +227,6 @@ public class enemyAi : MonoBehaviour
             isAttacking = false;
             anime.SetBool("Attack", isAttacking);
         }
-    }
-
-
-    void Patrol()
-    {
-        transform.Translate(speed * Time.deltaTime * dir);
-        if (transform.position.x <= -3)
-        {
-            dir = Vector3.right;
-
-        }
-        else if (transform.position.x >= 3)
-        {
-            dir = Vector3.left;
-        }
-        // flip sprite
-        if (dir == Vector3.right)
-        {
-            spriteRenderer.flipX = false;
-            GetComponent<CircleCollider2D>().offset = new Vector2(0.2f, GetComponent<CircleCollider2D>().offset.y);
-        }
-        else
-        {
-            spriteRenderer.flipX = true;
-            GetComponent<CircleCollider2D>().offset = new Vector2(-0.2f, GetComponent<CircleCollider2D>().offset.y);
-        }
-        
     }
 
     void Attack()

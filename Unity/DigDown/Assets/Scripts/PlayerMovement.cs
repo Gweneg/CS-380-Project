@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Timeline;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the script and class
 {
@@ -65,14 +67,14 @@ public class PlayerMovement : MonoBehaviour //-PlayerMovement is name of the scr
     private void Jump()
     {
         //executes the jump
-        body.velocity = new Vector2(body.velocity.x, speed);
+        body.velocity = new Vector2(body.velocity.x, 9);//inspector value was 6
         //plays the jump animation
         anime.SetTrigger("Jump");
         grounded = false;
     }
     private void JumpWShotgun() //- custom addition
     {
-        body.velocity = new Vector2(body.velocity.x, speed);
+        body.velocity = new Vector2(body.velocity.x, 9);//inspector value was 6
         anime.SetTrigger("JumpShotgun");
         grounded = false;
     }

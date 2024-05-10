@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.Il2Cpp;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -88,6 +89,7 @@ public class PlayerAttack : MonoBehaviour
         if (playerHP <= 0)
         {
             //go to game over screen, change the screen/scene
+            //SceneManager.LoadSceneAsync("Dead screen");
             gameObject.SetActive(false);
             //Destroy(gameObject);
         }
@@ -96,7 +98,7 @@ public class PlayerAttack : MonoBehaviour
         //If problem persists, change shotgun firing input to be Input.GetKeyDown(KeyCode.K).
         //Problem probably doesn't occur with the Mining right click.
 
-        if (Input.GetMouseButton(1) && aIP.ammoShotgun > 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
+        if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun > 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
             shotgunAnimator.Play("Shotgun Firing", 0, 0f);//**Everytime the condition is met above, the shoot animation will restart. SUCCESS
             shotgunAudioSource.Play();//play the shotgun shoot audio sound
@@ -165,7 +167,7 @@ public class PlayerAttack : MonoBehaviour
                                                        //Debug.Log("enemiesInRangeArr contents are " + enemiesInRangeArr[0] + ", " + enemiesInRangeArr[1]); //Why does this not get run???
             }
         }
-        else if (Input.GetMouseButton(1) && aIP.ammoShotgun <= 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
+        else if (Input.GetKeyDown(KeyCode.K) && aIP.ammoShotgun <= 0 && aPM.holdShotgun) //OG input //Input.GetKeyDown(KeyCode.K)
         {
             aPM.holdShotgun = false;
             anime.SetBool("HoldShotgun", aPM.holdShotgun);
