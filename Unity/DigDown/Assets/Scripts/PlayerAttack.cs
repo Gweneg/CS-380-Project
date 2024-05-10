@@ -54,6 +54,7 @@ public class PlayerAttack : MonoBehaviour
     public GameObject closestEnemy;
     //public Vector3 playerCenterPosition;
 
+    public int playerHP = 30;
     
 
     // Awake is called before the first frame update
@@ -84,6 +85,12 @@ public class PlayerAttack : MonoBehaviour
     // Update registers user input
     public void Update() //- was private
     {
+        if (playerHP <= 0)
+        {
+            //go to game over screen, change the screen/scene
+            gameObject.SetActive(false);
+            //Destroy(gameObject);
+        }
         //PROBLEM: one right click with my wireless mouse acts as if it clicked 10+ times.
         //Doesn't occur with mousepad right click.
         //If problem persists, change shotgun firing input to be Input.GetKeyDown(KeyCode.K).
@@ -126,20 +133,27 @@ public class PlayerAttack : MonoBehaviour
             {
                 //*** if the game object doesnt have the enemyAi script,
                 //check if it has the enemyAi2 script, if it doesn't, check if it has the enemyAi3 script
-                if (closestEnemy.GetComponent<SmallEnemyAi>() != null) //if closestEnemy has the SmallEnemyAi script...
-                {
-                    aSEA = closestEnemy.GetComponent<SmallEnemyAi>();
-                    aSEA.HP = aSEA.HP - 3;
-                }
-                else if (closestEnemy.GetComponent<enemyAi>() != null) //if closestEnemy has the enemyAi script (medium)...
+                //if (closestEnemy.GetComponent<SmallEnemyAi>() != null) //if closestEnemy has the SmallEnemyAi script...
+                //{
+                //    aSEA = closestEnemy.GetComponent<SmallEnemyAi>();
+                //    aSEA.HP = aSEA.HP - 3;
+                //}
+                //else if (closestEnemy.GetComponent<enemyAi>() != null) //if closestEnemy has the enemyAi script (medium)...
+                //{
+                //    aEA = closestEnemy.GetComponent<enemyAi>();
+                //    aEA.HP = aEA.HP - 3;
+                //}
+                //else if (closestEnemy.GetComponent<BigEnemyAi>() != null) //if closestEnemy has the BigEnemyAi script...
+                //{
+                //    aBEA = closestEnemy.GetComponent<BigEnemyAi>();
+                //    aBEA.HP = aBEA.HP - 3;
+                //}
+
+                ////////
+                if (closestEnemy.GetComponent<enemyAi>() != null)
                 {
                     aEA = closestEnemy.GetComponent<enemyAi>();
                     aEA.HP = aEA.HP - 3;
-                }
-                else if (closestEnemy.GetComponent<BigEnemyAi>() != null) //if closestEnemy has the BigEnemyAi script...
-                {
-                    aBEA = closestEnemy.GetComponent<BigEnemyAi>();
-                    aBEA.HP = aBEA.HP - 3;
                 }
                 ////////
 
