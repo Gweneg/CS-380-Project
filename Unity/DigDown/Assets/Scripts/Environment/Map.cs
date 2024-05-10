@@ -5,6 +5,9 @@ using GameResources;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
+using EditorScripts;
+using Unity.Collections;
+using UnityEngine.Serialization;
 
 namespace Environment
 {
@@ -13,6 +16,9 @@ namespace Environment
 	/// </summary>
 	public class Map : MonoBehaviour
 	{
+		// SINGLETON
+		public static Map Instance;
+		
 		// CONSTANTS
 		/// <summary>
 		/// The full-size (size measured between opposite edges) of tiles in the scene (width & height).
@@ -27,91 +33,148 @@ namespace Environment
 		/// </summary>
 		public static readonly Vector2 TileOffset = new(TileSize, TileSize);
 
-		// FIELDS - TILE
-		/// <summary>
-		/// The GameObject which parents all the map tiles.
-		/// </summary>
-		public static GameObject MapHolder;
+		// FIELDS - TILE INFO
 		/// <summary>
 		/// A dictionary keying ore types to their respective overlay sprite IDs for display on tiles.
 		/// </summary>
-		public static readonly Dictionary<TileInstance.OverlayType, ushort> OreSpriteIDs = new()
+		public static readonly Dictionary<TileInstance.OverlayType, SpriteName> OreSpriteIDs = new()
 		{
-			{TileInstance.OverlayType.None, 0},
-			{TileInstance.OverlayType.Iron, 12},
-			{TileInstance.OverlayType.Copper, 13},
-			{TileInstance.OverlayType.Silver, 14},
-			{TileInstance.OverlayType.Gold, 15},
-			{TileInstance.OverlayType.Diamond, 16},
-			{TileInstance.OverlayType.Azurite, 17},
-			{TileInstance.OverlayType.CloudOne, 18},
-			{TileInstance.OverlayType.CloudTwo, 19},
-			{TileInstance.OverlayType.CloudThree, 20},
+			{TileInstance.OverlayType.None, SpriteName.None},
+			{TileInstance.OverlayType.Iron, SpriteName.IronOreOverlay},
+			{TileInstance.OverlayType.Copper, SpriteName.CopperOreOverlay},
+			{TileInstance.OverlayType.Silver, SpriteName.SilverOreOverlay},
+			{TileInstance.OverlayType.Gold, SpriteName.GoldOreOverlay},
+			{TileInstance.OverlayType.Diamond, SpriteName.DiamondOreOverlay},
+			{TileInstance.OverlayType.Azurite, SpriteName.AzuriteOreOverlay},
+			{TileInstance.OverlayType.CloudOne, SpriteName.CloudOneOverlay},
+			{TileInstance.OverlayType.CloudTwo, SpriteName.CloudTwoOverlay},
+			{TileInstance.OverlayType.CloudThree, SpriteName.CloudThreeOverlay},
 		};
 		/// <summary>
 		/// A dictionary keying background types to their respective underlay sprite IDs for display under tiles.
 		/// </summary>
-		public static readonly Dictionary<TileInstance.UnderlayType, ushort> BackgroundSpriteIDs = new()
+		public static readonly Dictionary<TileInstance.UnderlayType, SpriteName> BackgroundSpriteIDs = new()
 		{
-			{TileInstance.UnderlayType.Sky, 21},
-			{TileInstance.UnderlayType.Dirt, 22},
-			{TileInstance.UnderlayType.Dirter, 23},
-			{TileInstance.UnderlayType.Dirtest, 24},
-			{TileInstance.UnderlayType.Stone, 25},
-			{TileInstance.UnderlayType.DeepStone, 26},
-			{TileInstance.UnderlayType.Lava, 27}
+			{TileInstance.UnderlayType.Sky, SpriteName.SkyBackground},
+			{TileInstance.UnderlayType.Dirt, SpriteName.DirtBackground},
+			{TileInstance.UnderlayType.Dirter, SpriteName.DirterBackground},
+			{TileInstance.UnderlayType.Dirtest, SpriteName.DirtestBackground},
+			{TileInstance.UnderlayType.Stone, SpriteName.StoneBackground},
+			{TileInstance.UnderlayType.DeepStone, SpriteName.DeepStoneBackground},
+			{TileInstance.UnderlayType.Lava, SpriteName.LavaBackground}
 		};
 		/// <summary>
 		/// The different types tiles could be.
 		/// </summary>
-		public static readonly Dictionary<int, TileType> TileTypes =
+		public static readonly Dictionary<TileTypeName, TileType> TileTypes =
 			new()
 		{
-			{0, new TileType(typeID: 0, spriteID: 0, durabilityMax: 0, durabilityHardness: 1, isSolid: false)},		  // Air.
-			{1, new TileType(typeID: 1, spriteID: 1, durabilityMax: 1, durabilityHardness: 1, isSolid: true)},        // Grass (to Dirt).
-			{2, new TileType(typeID: 2, spriteID: 2, durabilityMax: 2, durabilityHardness: 255/20, isSolid: true)},   // Dirt.
-			{3, new TileType(typeID: 3, spriteID: 3, durabilityMax: 4, durabilityHardness: 255/8, isSolid: true)},    // Dirt to Dirter.
-			{4, new TileType(typeID: 4, spriteID: 4, durabilityMax: 6, durabilityHardness: 255/4, isSolid: true)},    // Dirter.
-			{5, new TileType(typeID: 5, spriteID: 5, durabilityMax: 8, durabilityHardness: 255/8*3, isSolid: true)},  // Dirter to Dirtest.
-			{6, new TileType(typeID: 6, spriteID: 6, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)}, // Dirtest.
-			{7, new TileType(typeID: 7, spriteID: 7, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)}, // Dirtest to Stone.
-			{8, new TileType(typeID: 8, spriteID: 8, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},     // Stone.
-			{9, new TileType(typeID: 9, spriteID: 9, durabilityMax: 10, durabilityHardness: 255, isSolid: true)},  	  // Molten Rock
-		    {10, new TileType(typeID: 10, spriteID: 10, durabilityMax: 2, durabilityHardness: 255, isSolid: true)},	  // Lava
-			{11, new TileType(typeID: 11, spriteID: 11, durabilityMax: 255, durabilityHardness: 1, isSolid: true)},   // Void.
-			{12, new TileType(typeID: 12, spriteID: 12, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},  // Iron
-			{13, new TileType(typeID: 13, spriteID: 13, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},  // Copper
-			{14, new TileType(typeID: 14, spriteID: 14, durabilityMax: 30, durabilityHardness: 255, isSolid: true)},  // Silver
-			{15, new TileType(typeID: 15, spriteID: 15, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},  // Gold
-			{16, new TileType(typeID: 16, spriteID: 16, durabilityMax: 80, durabilityHardness: 255, isSolid: true)},  // Diamond
-			{17, new TileType(typeID: 17, spriteID: 17, durabilityMax: 40, durabilityHardness: 255, isSolid: true)}   // Azurite
+			{TileTypeName.Air, new TileType(TileTypeName.Air, SpriteName.None, durabilityMax: 0, durabilityHardness: 1, isSolid: false)},
+			{TileTypeName.GrassToDirt, new TileType(TileTypeName.GrassToDirt, SpriteName.GrassToDirt, durabilityMax: 1, durabilityHardness: 1, isSolid: true)},
+			{TileTypeName.Dirt, new TileType(TileTypeName.Dirt, SpriteName.Dirt, durabilityMax: 2, durabilityHardness: 255/20, isSolid: true)},
+			{TileTypeName.DirtToDirter, new TileType(TileTypeName.DirtToDirter, SpriteName.DirtToDirter, durabilityMax: 4, durabilityHardness: 255/8, isSolid: true)},
+			{TileTypeName.Dirter, new TileType(TileTypeName.Dirter, SpriteName.Dirter, durabilityMax: 6, durabilityHardness: 255/4, isSolid: true)},
+			{TileTypeName.DirterToDirtest, new TileType(TileTypeName.DirterToDirtest, SpriteName.DirterToDirtest, durabilityMax: 8, durabilityHardness: 255/8*3, isSolid: true)},
+			{TileTypeName.Dirtest, new TileType(TileTypeName.Dirtest, SpriteName.Dirtest, durabilityMax: 12, durabilityHardness: 255/8*5, isSolid: true)},
+			{TileTypeName.DirtestToStone, new TileType(TileTypeName.DirtestToStone, SpriteName.DirtestToStone, durabilityMax: 14, durabilityHardness: 255/8*6, isSolid: true)},
+			{TileTypeName.Stone, new TileType(TileTypeName.Stone, SpriteName.Stone, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.MoltenRock, new TileType(TileTypeName.MoltenRock, SpriteName.MoltenRock, durabilityMax: 10, durabilityHardness: 255, isSolid: true)},
+		    {TileTypeName.Lava, new TileType(TileTypeName.Lava, SpriteName.Lava, durabilityMax: 2, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.Void, new TileType(TileTypeName.Void, SpriteName.Void, durabilityMax: 255, durabilityHardness: 1, isSolid: true)},
+			{TileTypeName.IronOre, new TileType(TileTypeName.IronOre, SpriteName.IronOreOverlay, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.CopperOre, new TileType(TileTypeName.CopperOre, SpriteName.CopperOreOverlay, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.SilverOre, new TileType(TileTypeName.SilverOre, SpriteName.SilverOreOverlay, durabilityMax: 30, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.GoldOre, new TileType(TileTypeName.GoldOre, SpriteName.GoldOreOverlay, durabilityMax: 20, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.DiamondOre, new TileType(TileTypeName.DiamondOre, SpriteName.DiamondOreOverlay, durabilityMax: 80, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.AzuriteOre, new TileType(TileTypeName.AzuriteOre, SpriteName.AzuriteOreOverlay, durabilityMax: 40, durabilityHardness: 255, isSolid: true)},
+			{TileTypeName.Cloud, new TileType(TileTypeName.Cloud, SpriteName.CloudOneOverlay, durabilityMax: 40, durabilityHardness: 255, isSolid: false)},
 		};
+		/// <summary>
+		/// A dictionary of cached tile instance copies for cleaner/streamlined tile creation.
+		/// </summary>
+		public static readonly Dictionary<TileTypeName, TileInstance> TileInstanceCopies = TileTypes
+		                                                                                  .Select(tileType => new TileInstance(tileType.Value))
+		                                                                                  .ToDictionary(tileInstance => tileInstance.TypeID);
+		
+		// FIELDS - WORLD DATA
+		/// <summary>
+		/// The GameObject which parents all the map tiles.
+		/// </summary>
+		[Space(Formatting.CategoryTopPadding), Header("World Data")]
+		private GameObject _mapHolder;
 		/// <summary>
 		/// The instances of tiles for the current map.
 		/// </summary>
-		public TileInstance[,] InstanceTiles;
+		public static TileInstance[,] InstanceTiles => Instance._instanceTiles;
 		/// <summary>
-		/// The width of the map, measured in tiles.
+		/// The backing field for instances of tiles for the current map.
+		/// </summary>
+		private TileInstance[,] _instanceTiles; // Backing field for property.
+		/// <summary>
+		/// The width of the map (in tiles).
 		/// </summary>
 		public static uint MapWidth
 		{
-			get;
-			private set;
+			get => Instance._mapWidth;
+			private set => Instance._mapWidth = value;
 		}
 		/// <summary>
-		/// The height of the map, measured in tiles.
+		/// The backing field for the width of the map (in tiles).
+		/// </summary>
+		private uint _mapWidth;
+		/// <summary>
+		/// The height of the map (in tiles).
 		/// </summary>
 		public static uint MapHeight
 		{
-			get;
-			private set;
+			get => Instance._mapHeight;
+			private set => Instance._mapHeight = value;
 		}
+		/// <summary>
+		/// The backing field for the height of the map (in tiles).
+		/// </summary>
+		private uint _mapHeight;
+
+		// FIELDS - WORLD GENERATION SETTINGS
+		/// <summary>
+		/// The horizontal size caves should generate as.
+		/// </summary>
+		[Space(Formatting.CategoryTopPadding), Header("World Generation Settings")]
+		public uint generationCaveLength = 15;
+		/// <summary>
+		/// The vertical size caves should generate as.
+		/// </summary>
+		public uint generationCaveHeight = 4;
+		/// <summary>
+		/// The number of caves to generate in the world.
+		/// </summary>
+		public uint generationCaveCount = 6;
+		/// <summary>
+		/// The width to generate the world at.
+		/// </summary>
+		public uint generationMapWidth = 30; 
+		/// <summary>
+		/// The height to generate the world at.
+		/// </summary>
+		public uint generationMapHeight = 120;
+		/// <summary>
+		/// The number of layers to generate the world with.
+		/// </summary>
+		/// <remarks>Set this to be no larger than the number of types established in the TileTypes, otherwise it will miss a key and crash.</remarks>
+		public uint generationLayerCount = 6;
+		/// <summary>
+		/// The vertical size of each layer in the world.
+		/// </summary>
+		/// <remarks>If the total size of the layers (layerCount * layerSize) is greater than the map size, it will be truncated.
+		/// If it is smaller, the last layer will be stretched.</remarks>
+		public uint generationLayerSize = 20;
+
 
 		// FIELDS - VIEWPORT
 		/// <summary>
 		/// The offset of the map from the world origin.
 		/// </summary>
-		private static Vector2 _mapOffset;
+		private Vector2 _mapOffset;
 		/// <summary>
 		/// The bottom-left coordinate of the window in which tiles are rendered to TileObjects.
 		/// </summary>
@@ -257,7 +320,7 @@ namespace Environment
 					uint newTileYCoordinate = (uint)(chunkCoordinateY * renderHeight + renderRowIndex);
 
 					// Store the tile information that will be applied.
-					TileInstance tileInstance = InstanceTiles[newTileYCoordinate,
+					TileInstance tileInstance = _instanceTiles[newTileYCoordinate,
 															  newTileXCoordinate];
 					TileType tileType = TileTypes[tileInstance.TypeID];
 					Sprite tileSprite = ResourceManager.GetSprite(tileType.spriteID);
@@ -294,7 +357,7 @@ namespace Environment
 				for (long columnIndex = 0; columnIndex < renderWidth; columnIndex++)
 				{
 					// Store the tile information that will be applied.
-					TileInstance tileInstance = InstanceTiles[rowIndex, columnIndex];
+					TileInstance tileInstance = _instanceTiles[rowIndex, columnIndex];
 					TileType tileType = TileTypes[tileInstance.TypeID];
 					Sprite tileSprite = ResourceManager.GetSprite(tileType.spriteID);
 					Sprite tileOverlaySprite = ResourceManager.GetSprite(OreSpriteIDs[tileInstance.Overlay]);
@@ -327,7 +390,7 @@ namespace Environment
 		public static (uint xCoordinate, uint yCoordinate) GetTileCoordinates(Vector2 position)
 		{
 			// Compute the coordinate by getting the relative position from the bottom-left corner of the map, then converting into tiles (instead of distance). 
-			Vector2 offset = (position - _mapOffset) / TileSize;
+			Vector2 offset = (position - Instance._mapOffset) / TileSize;
 			// Round and clamp the coordinates to make them safe for use in indexing the map array.
 			// Note: This means out-of-range coordinates will be clamped to the edge of the map. Add a warn?
 			uint xCoordinate = (uint)Math.Clamp(offset.x, 0, MapWidth - 1);
@@ -344,25 +407,29 @@ namespace Environment
 		{
 			// Unbox the x and y components.
 			(uint xCoordinate, uint yCoordinate) = coordinates;
-			return _mapOffset + new Vector2(xCoordinate, yCoordinate) * TileSize;
+			return Instance._mapOffset + new Vector2(xCoordinate, yCoordinate) * TileSize;
 		}
 		/// <summary>
 		/// Checks whether or not the tile at the specified coordinates is an Air tile.
 		/// </summary>
-		/// <param name="x">The X-coordinate of the tile to check.</param>
-		/// <param name="y">The Y-coordinate of the tile to check.</param>
+		/// <param name="coordinates">The grid-coordinates (X,Y) of the tile to check.</param>
+		/// <param name="mapSize">The dimensions (width, height) of the map being checked.</param>
+		/// <param name="tileInstances">The map containing the tile to be checked.</param>
 		/// <returns>True when the tile at the given coordinates is Air; False when it is not.</returns>
-		public bool IsAirTileAtCoordinates(uint x, uint y)
+		public static bool IsAirTileAtCoordinates((uint, uint) coordinates, (uint, uint) mapSize, TileInstance[,] tileInstances)
 		{
+			// Unbox the x and y components.
+			(uint xCoordinate, uint yCoordinate) = coordinates;
+			(uint mapWidth, uint mapHeight) = mapSize;
 			// Check if the coordinates are within the map bounds
-			if (x >= MapWidth || y >= MapHeight)
+			if (xCoordinate >= mapWidth || yCoordinate >= mapHeight)
 			{
 				Debug.LogError("Coordinates are out of map bounds!");
 				return false;
 			}
 
 			// Get the tile instance at the specified coordinates
-			TileInstance tileInstance = InstanceTiles[y, x];
+			TileInstance tileInstance = tileInstances[yCoordinate, xCoordinate];
 
 			// Check if the tile type ID corresponds to an air tile
 			return tileInstance.TypeID == 0;
@@ -377,170 +444,293 @@ namespace Environment
 		public static void MoveMap(Vector2 position)
 		{
 			// Cache the map's transform.
-			Transform mapTransform = MapHolder.transform;
+			Transform mapTransform = Instance._mapHolder.transform;
 			// Set the map's position.
 			mapTransform.position = position + Vector2.left * TileSize;
 			// Update the offset.
-			_mapOffset = mapTransform.position;
+			Instance._mapOffset = mapTransform.position;
 		}
 
-
-		// METHODS - MAP INTERACTION
+		
+		// METHODS - WORLD GEN
 		/// <summary>
 		/// Generates a map with the given dimensions.
 		/// </summary>
 		/// 
-		public void GenerateMap()
+		public static void GenerateMap()
 		{
-			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
-			Dictionary<ushort, TileInstance> tileInstanceCopies = TileTypes
-																 .Select(tileType => new TileInstance(tileType.Value))
-																 .ToDictionary(tileInstance => tileInstance.TypeID);
-			// // 1. Get the type from the ID
-			// TileType newTilesType = TileTypes[1];
-			// // 2. Create the tile from the type
-			// TileInstance newTileA = new TileInstance(newTilesType);
-
-			// (1 + 2 Combined)
-			TileInstance newTileB = tileInstanceCopies[1];
-
-			// 3. Set the tile in the world
-			InstanceTiles[0, 0].Set(newTileB);
+			// Cache the map generation settings.
+			uint mapWidth = Instance.generationMapWidth;
+			uint mapHeight = Instance.generationMapHeight;
+			(uint, uint) mapSize = (mapWidth, mapHeight);
+			// Layers.
+			uint layerSize = Instance.generationLayerSize;
+			uint layerCount = Instance.generationLayerCount;
+			// Caves.
+			uint caveLength = Instance.generationCaveLength;
+			uint caveHeight = Instance.generationCaveHeight;
+			uint caveCount = Instance.generationCaveCount;
+			
+			// Update the stored map size.
+			MapHeight = mapHeight;
+			MapWidth = mapWidth;
+			// Initialize the map instance array.
+			Instance._instanceTiles = new TileInstance[MapHeight, MapWidth];
+			
+			// Cache other references.
+			Dictionary<TileTypeName, TileInstance> tileInstanceCopies = TileInstanceCopies;
+			TileInstance[,] instanceTiles = InstanceTiles;
+			
+			/* // Debug: This comment shows the basic process for creating and settings tiles in the world.
+			 // 1. Get the type from the ID
+			 TileType newTilesType = TileTypes[TileTypeName.Air];
+			 // 2. Create the tile from the type
+			 TileInstance newTileA = new TileInstance(newTilesType);
+			 // 1+2. Create the tile from the ID
+			 TileInstance newTileB = TileInstanceCopies[TileTypeName.Air];
+			 // 3. Set the tile in the world
+			 InstanceTiles[0, 0].Set(newTileB);
+			*/
 
 			// Each layer needs similar amount of rows excluding transition tiles (0,2,4,6)
 			//Sample Output: 9 9 9 9, 8, 7 7 7 7, 6, 5 5 5 5, 4, 3 3 3 3, 2, 1 1 1 1, 0
 			// Note: When adding new environment tiles add them in pairs to avoid changing this code a lot
-			const uint mapLayerSize = 20; // The size (in rows) of each layer.
-			const uint mapLayerCount = 6; // The number of layers.
-			for (uint row = 0; row < MapHeight; row++)
+			
+			// Generate the terrain.
+			_GenerateTerrain(mapSize: mapSize, 
+			                 layerSize: layerSize, layerCount: layerCount,
+			                 instanceTiles, tileInstanceCopies);
+
+			// Generate the caves.
+			Vector4 cavePadding = new Vector4(0, 1, 0f, 0.75f);
+			_GenerateCaves(mapSize: mapSize,
+			               instanceTiles, tileInstanceCopies,
+			               caveCount: caveCount, caveLength: caveLength, caveHeight: caveHeight, 
+			               cavePadding: cavePadding);
+			
+			// Generate ores.
+			Vector4 commonOrePadding = new Vector4(0, 1, 0.5f, 0.85f);
+			Vector4 uncommonOrePadding = new Vector4(0, 1, 0.15f, 0.65f);
+			Vector4 rareOrePadding = new Vector4(0, 1, 0f, 0.25f);
+			_GenerateOres(mapSize: mapSize,
+			              mapInstanceTiles: instanceTiles,
+			              commonOrePadding, uncommonOrePadding, rareOrePadding);
+
+			// Generate decorations.
+			Vector4 cloudPadding = new Vector4(0, 1, 0.95f, 1f);
+			_GenerateDecorations(mapSize: (mapWidth, mapHeight),
+			                     mapInstanceTiles: instanceTiles,
+			                     cloudPadding);
+			
+			// Todo: Perform generation
+			// Todo: Perform point-of-interest (caves, loot, etc.) generation
+			// Todo: Perform world-gen validation
+			// Todo: Perform navigation graph generation.
+		}
+		private static void _GenerateTerrain((uint, uint) mapSize, uint layerSize, uint layerCount,
+		                                     TileInstance[,] mapInstanceTiles,
+		                                     IReadOnlyDictionary<TileTypeName, TileInstance> tileInstanceCache)
+		{
+			// Unpack the map size.
+			(uint mapWidth, uint mapHeight) = mapSize;
+			
+			// Generate the map terrain.
+			for (uint row = 0; row < mapHeight; row++)
 			{
 				// Note: Must subtract from odd number or will fill map with transitional tiles instead
-				uint distanceFromSurface = MapHeight - row - 1;
+				uint distanceFromSurface = mapHeight - row - 1;
 				// Compute the current layer.
-				uint layerCurrent = distanceFromSurface / mapLayerSize;
+				uint layerCurrent = distanceFromSurface / layerSize;
 				// Clamp the layer to the number of layers.
-				layerCurrent = Math.Min(layerCurrent, mapLayerCount - 1);
+				layerCurrent = Math.Min(layerCurrent, layerCount - 1);
 				
 				// Get the tile ID for the current layer.
 				uint tileID = layerCurrent * 2;
 				
 				// Check if we're on the transition to the next layer.
-				bool isLayerBoundary = (distanceFromSurface + 1) % mapLayerSize == 0;
+				bool isLayerBoundary = (distanceFromSurface + 1) % layerSize == 0;
 				// Change the tile to a layer-transition tile if we're on the edge of two layers.
 				if (isLayerBoundary)
 				{
 					tileID += 1;
 				}
 
+				// Get the tile's type name.
+				TileTypeName tileTypeName = (TileTypeName)tileID;
 				// Configure the tile preset for the row (a little more optimized than doing it for each tile).
-				TileInstance modifiedTile = tileInstanceCopies[(ushort)tileID];
+				TileInstance modifiedTile = tileInstanceCache[tileTypeName];
 				modifiedTile.Underlay = (TileInstance.UnderlayType) layerCurrent;
-				tileInstanceCopies[(ushort) tileID] = modifiedTile;
 				
 				// Set the tile for each column in the row.
-				for (int column = 0; column < MapWidth; column++)
+				for (int column = 0; column < mapWidth; column++)
 				{
 					// Set the instance for the current column/tile.
-					InstanceTiles[row, column].Set(tileInstanceCopies[(ushort)tileID]);
+					mapInstanceTiles[row, column].Set(modifiedTile);
 				}
 			}
-
-			// Generate a long cave randomly in the map.
-			const uint caveLength = 15;
-			const uint caveHeight = 4;
-			const uint caveCount = 6;
-			Vector4 cavePadding = new Vector4(0, 1, 0.75f, 0f);
+		}
+		private static void _GenerateCaves((uint, uint) mapSize, 
+		                                   TileInstance[,] mapInstanceTiles,
+		                                   IReadOnlyDictionary<TileTypeName, TileInstance> tileInstanceCache,
+		                                   uint caveCount, uint caveLength, uint caveHeight,
+		                                   Vector4 cavePadding)
+		{
+			// Catch no caves generated.
+			if (caveCount == 0) return;
 			
-			// Catch bad map/cave dimensions.
-			if (caveCount != 0 && (caveLength > MapWidth || caveHeight > MapHeight))
+			// Unpack the map size.
+			(uint mapWidth, uint mapHeight) = mapSize;
+			
+			// Compute the cave padding.
+			ClampPadding(ref cavePadding);
+			Vector2 mapMaximums = new Vector2(mapWidth - 1, mapHeight - 1);
+			(uint minCaveColumnPad, uint maxCaveColumnPad, uint minCaveRowPad, uint maxCaveRowPad) = ApplyPadding(cavePadding, 
+			                                                                                                      mapMaximums);
+			
+			// Compute the maximum cave bounds.
+			int minCaveColumn = (int)minCaveColumnPad;
+			int maxCaveColumn = (int)maxCaveColumnPad - (int)caveLength;
+			int minCaveRow = (int)minCaveColumnPad;
+			int maxCaveRow = (int)maxCaveRowPad - (int)caveHeight;
+			
+			// Catch if the map/caves too large.
+			if (maxCaveColumn < 0
+			    || maxCaveRow < 0)
 			{
-				Debug.LogError("Cave dimensions are too large for the map!");
+				Debug.LogError($"Cave dimensions are too large for the map with the given size & padding.\nCave: {caveLength} x {caveHeight} tiles, <Left: {minCaveColumnPad}, Right: {maxCaveColumnPad}, Bottom: {minCaveRowPad}, Top: {maxCaveRowPad}> tiles.\nMap: {mapWidth} x {mapHeight} tiles.");
 				return;
 			}
+			// Catch if the padding too small.
+			if (caveLength > maxCaveColumnPad - minCaveColumnPad + 1
+			    || caveHeight > maxCaveRowPad - maxCaveColumnPad + 1)
+			{
+				Debug.LogWarning($"Cave generation padding is too small; overrunning upper bounds.\nCave: {caveLength} x {caveHeight} tiles.\n<Left: {minCaveColumnPad}, Right: {maxCaveColumnPad}, Bottom: {minCaveRowPad}, Top: {maxCaveRowPad}> tiles.");
+			}
 			
-			
-			for (int i = 0; i < caveCount; i++)
+			// Generate each cave.
+			for (int caveIndex = 0; caveIndex < caveCount; caveIndex++)
 			{
 				// Compute the start column for the cave.
-				int startColumn = UnityEngine.Random.Range(minInclusive: (int) (MapWidth * cavePadding.x), 
-				                                           maxExclusive: (int) (MapWidth * cavePadding.y));
-				startColumn = Math.Clamp(startColumn, 0, (int) MapWidth - (int) caveLength);
+				uint startColumn = (uint) Random.Range(minCaveColumn, maxCaveColumn);
+				// Compute the start row for the cave.
+				uint startRow = (uint) Random.Range(minCaveRow, maxCaveRow);
 				
-				// Compute the start Row for the cave.
-				int startRow = UnityEngine.Random.Range(minInclusive: (int) (MapHeight * cavePadding.z), 
-				                                        maxExclusive: (int) (MapHeight * cavePadding.w));
-				startRow = Math.Clamp(startRow, 0, (int) MapHeight - (int) caveHeight);
-				
-				// Clear the cave area.
-				for (int row = 0; row < caveHeight; row++)
+				// Create the cave area.
+				for (uint row = 0; row < caveHeight; row++)
 				{
-					for (int column = 0; column < caveLength; column++)
+					for (uint column = 0; column < caveLength; column++)
 					{
 						// Store the tile's background type before changing it.
-						TileInstance.UnderlayType underlayType = InstanceTiles[row + startRow, column + startColumn].Underlay;
-						// Get the tile instance corresponding to the new tile ID.
-						TileInstance airTile = tileInstanceCopies[0];
+						TileInstance.UnderlayType underlayType = mapInstanceTiles[row + startRow, column + startColumn].Underlay;
+						// Create an air tile.
+						TileInstance airTile = tileInstanceCache[TileTypeName.Air];
 						// Set the tile instance at the current coordinates to the new tile.
-						InstanceTiles[row + startRow, column + startColumn].Set(airTile);
+						mapInstanceTiles[row + startRow, column + startColumn].Set(airTile);
 						// Set the tile's background type back to what it was.
-						SetTileUnderlay(x: (uint) (column + startColumn), y: (uint) (row + startRow), underlayType);
+						SetTileUnderlay(coordinates: (column + startColumn, row + startRow), 
+						                underlayType, mapInstanceTiles);
 					}
 				}
 			}
-			
-			Vector4 commonOrePadding = new Vector4(0, 1, 0.75f, 0f);
-			SetRandomTiles(0, 150, commonOrePadding); // Set random air.
-			SetRandomTiles(12, 30, commonOrePadding); // Set random iron.
-			SetRandomTiles(13, 20, commonOrePadding); // Set random copper.
-			
-			Vector4 uncommonOrePadding = new Vector4(0, 1, 0.50f, 0f);
-			SetRandomTiles(14, 16, uncommonOrePadding); // Set random silver.
-			SetRandomTiles(15, 10, uncommonOrePadding); // Set random gold.
-			
-			Vector4 rareOrePadding = new Vector4(0, 1, 0.25f, 0f);
-			SetRandomTiles(16, 5, rareOrePadding); // Set random diamond.
-			SetRandomTiles(17, 5, rareOrePadding); // Set random azurite.
-			
-			Vector4 skyPadding = new Vector4(0, 1, 1f, 0.95f);
-			SetRandomTiles(200, 25, skyPadding); // Set random clouds. // Todo: Figure out something for cloud block's ID.
-
-			// Todo: Perform generation
-			// Todo: Perform point-of-interest (caves, loot, etc.) generation
-			// Todo: Perform world-gen validation
-			// Todo: Perform navigation graph generation.
 		}
-		/// <summary>
-		/// Configures the map and sets the width & height.
-		/// </summary>
-		/// <param name="width">The width (in tiles) of the map.</param>
-		/// <param name="height">The height (in tiles) of the map.</param>
-		public void ConfigureMap(uint width, uint height)
+		private static void _GenerateOres((uint, uint) mapSize,
+		                                  TileInstance[,] mapInstanceTiles,
+		                                  Vector4 commonOrePadding, Vector4 uncommonOrePadding, Vector4 rareOrePadding)
 		{
-			// Check if we need to create the MapHolder.
-			if (MapHolder == null)
+			// Unpack the map size.
+			(uint mapWidth, uint mapHeight) = mapSize;
+			
+			// Common ores.
+			SetRandomTiles(id: TileTypeName.Air,
+			               padding: commonOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               150); // Set random air.
+			SetRandomTiles(id: TileTypeName.IronOre,
+			               padding: commonOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               30); // Set random iron.
+			SetRandomTiles(id: TileTypeName.CopperOre,
+			               padding: commonOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               20); // Set random copper.
+			
+			// Uncommon ores.
+			SetRandomTiles(id: TileTypeName.SilverOre,
+			               padding: uncommonOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               16); // Set random silver.
+			SetRandomTiles(id: TileTypeName.GoldOre,
+			               padding: uncommonOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               10); // Set random gold.
+			
+			// Rare ores.
+			SetRandomTiles(id: TileTypeName.DiamondOre,
+			               padding: rareOrePadding,
+			               mapSize: (mapWidth, mapHeight),
+			               instanceTiles: mapInstanceTiles,
+			               5); // Set random diamond.
+			SetRandomTiles(id: TileTypeName.AzuriteOre,
+			                padding: rareOrePadding,
+			                mapSize: (mapWidth, mapHeight),
+			                instanceTiles: mapInstanceTiles,
+			                5); // Set random azurite.
+		}
+		private static void _GenerateDecorations((uint, uint) mapSize,
+		                                         TileInstance[,] mapInstanceTiles,
+		                                         Vector4 cloudPadding)
+		{
+			SetRandomTiles(id: TileTypeName.Cloud,
+			               padding: cloudPadding,
+			               mapSize: mapSize,
+			               instanceTiles: mapInstanceTiles,
+			               25); // Set random clouds.
+		}
+		
+
+		// METHODS - MAP CONFIGURATION
+		/// <summary>
+		/// Configures the map gen's width & height, and layer count & size (depth).
+		/// </summary>
+		/// <param name="newMapDimensions">The dimensions (width, height) of the generated map (in tiles).</param>
+		/// <param name="layerCount">The number of layers to generate in the world.</param>
+		/// <param name="layerSize">The size of each layer (in tiles) generated in the world.</param>
+		/// <remarks>Do not pass a layerCount larger than the number of types established in TileTypes, otherwise unexpected behaviour will arise.</remarks>
+		public static void ConfigureMap((uint, uint) newMapDimensions, uint layerSize, uint layerCount)
+		{
+			// Check if we need to create the MapHolder GameObject.
+			if (Instance._mapHolder == null)
 			{
-				MapHolder = new GameObject("MapHolder");
+				Instance._mapHolder = new GameObject("MapHolder");
 			}
-			// Initialize the tile array.
-			InstanceTiles = new TileInstance[height, width];
-			// Update the stored map size.
-			MapWidth = width;
-			MapHeight = height;
+			// Unpack the dimensions.
+			(uint width, uint height) = newMapDimensions;
+			// Set the map gen dimensions.
+			Instance.generationMapWidth = width;
+			Instance.generationMapHeight = height;
+			// Set the layer gen dimensions.
+			Instance.generationLayerSize = layerSize;
+			Instance.generationLayerCount = layerCount;
 		}
 		/// <summary>
 		/// Configures the render tiles objects of the map.
 		/// </summary>
 		/// <param name="width">The width (in tiles) of the render view.</param>
 		/// <param name="height">The height (in tiles) of the render view.</param>
-		public void ConfigureRenderTiles(ushort width, ushort height)
+		public static void ConfigureRenderTiles(ushort width, ushort height)
 		{
 			// Cache the old render size.
-			(ushort oldWidth, ushort oldHeight) = _renderSize;
+			(ushort oldWidth, ushort oldHeight) = Instance._renderSize;
 
 			// Remake the array if it's a different size than before.
 			if (width != oldWidth || height != oldHeight)
 			{
-				TileObject[,] oldRenderTiles = _renderTiles;
+				TileObject[,] oldRenderTiles = Instance._renderTiles;
 				TileObject[,] newRenderTiles = new TileObject[height, width];
 
 				for (int rowIndex = 0; rowIndex < height; rowIndex++)
@@ -564,7 +754,7 @@ namespace Environment
 								{
 									transform =
 									{
-										parent = MapHolder.transform,
+										parent = Instance._mapHolder.transform,
 										localScale = new Vector3(TileSize, TileSize, TileSize)
 									}
 								};
@@ -630,81 +820,71 @@ namespace Environment
 				}
 
 				// Assign the new render tile array.
-				_renderTiles = newRenderTiles;
+				Instance._renderTiles = newRenderTiles;
 			}
 
 			// Update the render size.
-			_renderSize = (width, height);
+			Instance._renderSize = (width, height);
 		}
+		
+		
+		// METHODS - MAP INTERACTION
 		/// <summary>
 		/// Changes a number of random tiles in the map into the provided type.
 		/// </summary>
 		/// <param name="id">The ID to set a random tile to.</param>
+		/// <param name="padding">The padding (area excluded, in percent of map width and height) for the left (X), right (Y), bottom (Z), and top (W) sides respectively.</param>
+		/// <param name="mapSize">The size (width, height) of the generated map (in tiles).</param>
+		/// <param name="instanceTiles">The map to randomly set tiles within.</param>
 		/// <param name="repetitions">The number of times to repeat the random change.</param>
-		/// <param name="padding">The padding (area excluded, in percent of map width and height) for the left (X), right (Y), top (Z), and bottom (W) sides respectively.</param>
-		public void SetRandomTiles(ushort id, int repetitions, Vector4 padding = default)
+		/// <param name="maxRepetitions">The maximum number of times to repeat the random change before giving up.</param>
+		public static void SetRandomTiles(TileTypeName id,
+		                                  Vector4 padding,
+		                                  (uint, uint) mapSize,
+		                                  TileInstance[,] instanceTiles,
+		                                  int repetitions, int maxRepetitions = 100)
 		{
-			uint minX = 0;
-			uint maxX = MapWidth - 1;
-			uint minY = 0;
-			uint maxY = MapHeight - 1;
+			// Unpack the dimensions.
+			(uint mapWidth, uint mapHeight) = mapSize;
 			
-			if (padding != default)
-			{
-				// Clamp the padding to be within the range of 0 to 1.
-				padding.x = Mathf.Clamp(padding.x, 0, 1);
-				padding.y = Mathf.Clamp(padding.y, 0, 1);
-				padding.z = Mathf.Clamp(padding.z, 0, 1);
-				padding.w = Mathf.Clamp(padding.w, 0, 1);
-				// Clamp the padding to not cross itself.
-				padding.x = Mathf.Min(padding.x, padding.y);
-				padding.y = Mathf.Max(padding.x, padding.y);
-				padding.z = Mathf.Max(padding.z, padding.w);
-				padding.w = Mathf.Min(padding.z, padding.w);
-				// Calculate the bounds of the random lookup.
-				minX = (uint)(MapWidth * padding.x);
-				maxX = (uint)((MapWidth - 1) * padding.y);
-				minY = (uint)(MapHeight * padding.z);
-				maxY = (uint)((MapHeight - 1) * padding.w);
-			}
+			// Clamp the padding to be within the map bounds.
+			ClampPadding(ref padding);
 			
+			// Compute the bounds from the padding.
+			Vector2 mapMaximums = new Vector2(mapWidth - 1, mapHeight - 1);
+			(uint minX, uint maxX, uint minY, uint maxY) = ApplyPadding(padding, mapMaximums);
 			
-			// Initialize bases of each tile instance type for faster instantiation. Linq for tidiness.
-			Dictionary<ushort, TileInstance> tileInstanceCopies =
-			TileTypes.Select(tileType => new TileInstance(tileType.Value)).ToDictionary(tileInstance => tileInstance.TypeID);
-
 			// Track the number of failed repetitions.
 			uint failedRepetitions = 0;
-			const uint maxFailedRepetitions = 100;
 			
 			// Add random ore & air pockets to the map.
 			for (int i = 0; i <= repetitions; i++)
 			{
 				// Get random coordinates from the Map
-				ushort randomX = (ushort) UnityEngine.Random.Range(minX, maxX);
-				ushort randomY = (ushort) UnityEngine.Random.Range(minY, maxY);
+				ushort randomX = (ushort) Random.Range(minX, maxX);
+				ushort randomY = (ushort) Random.Range(minY, maxY);
 				
 				// Check if the random tile is air.
-				bool isAirTile = IsAirTileAtCoordinates(randomX, randomY);
+				bool isAirTile = IsAirTileAtCoordinates((randomX, randomY), mapSize, instanceTiles);
 				
 				// Perform the tile change based on the ID.
 				switch (id)
 				{
-					case 0: // Air
+					case TileTypeName.Air: // Air
 						// Save the background at the tile's location.
-						TileInstance.UnderlayType currentUnderlay = InstanceTiles[randomY, randomX].Underlay;
+						TileInstance.UnderlayType currentUnderlay = instanceTiles[randomY, randomX].Underlay;
 						// Get & configure the tile instance that will replace the current tile.
-						TileInstance airTile = tileInstanceCopies[id];
+						TileInstance airTile = TileInstanceCopies[id];
 						// Set the tile instance at the current coordinates to the new tile.
-						InstanceTiles[randomY, randomX].Set(airTile);
+						instanceTiles[randomY, randomX].Set(airTile);
 						// Set the underlay to the previous underlay.
-						SetTileUnderlay(randomX, randomY, currentUnderlay);
+						SetTileUnderlay(coordinates: (randomX, randomY), currentUnderlay, instanceTiles);
 						break;
 					
-					case 12: // Iron
+					case TileTypeName.IronOre:
 						if (isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Iron);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Iron, instanceTiles);
 						}
 						else
 						{
@@ -712,7 +892,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -720,10 +900,10 @@ namespace Environment
 						}
 						break;
 					
-					case 13: // Copper
+					case TileTypeName.CopperOre:
 						if (isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Copper);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Copper, instanceTiles);
 						}
 						else
 						{
@@ -731,7 +911,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -739,10 +919,10 @@ namespace Environment
 						}
 						break;
 					
-					case 14: // Silver
+					case TileTypeName.SilverOre:
 						if (isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Silver);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Silver, instanceTiles);
 						}
 						else
 						{
@@ -750,7 +930,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -758,10 +938,10 @@ namespace Environment
 						}
 						break;
 					
-					case 15: // Gold
+					case TileTypeName.GoldOre:
 						if(isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Gold);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Gold, instanceTiles);
 						}
 						else
 						{
@@ -769,7 +949,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -777,10 +957,10 @@ namespace Environment
 						}
 						break;
 					
-					case 16: // Diamond
+					case TileTypeName.DiamondOre:
 						if (isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Diamond);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Diamond, instanceTiles);
 						}
 						else
 						{
@@ -788,7 +968,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -796,10 +976,10 @@ namespace Environment
 						}
 						break;
 					
-					case 17: // Azurite
+					case TileTypeName.AzuriteOre:
 						if (isAirTile == false)
 						{
-							SetTileOverlay(x: randomX, y: randomY, TileInstance.OverlayType.Azurite);
+							SetTileOverlay(coordinates: (randomX, randomY), TileInstance.OverlayType.Azurite, instanceTiles);
 						}
 						else
 						{
@@ -807,7 +987,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -815,7 +995,7 @@ namespace Environment
 						}
 						break;
 					
-					case 200: // Debug: Temp cloud
+					case TileTypeName.Cloud: // Debug: Temp cloud
 						if (isAirTile)
 						{
 							TileInstance.OverlayType cloudType = Random.Range(0, 4) switch
@@ -825,7 +1005,7 @@ namespace Environment
 								2 => TileInstance.OverlayType.CloudThree,
 								_ => TileInstance.OverlayType.CloudThree
 							};
-							SetTileOverlay(x: randomX, y: randomY, cloudType);
+							SetTileOverlay(coordinates: (randomX, randomY), cloudType, instanceTiles);
 						}
 						else
 						{
@@ -833,7 +1013,7 @@ namespace Environment
 							i--;
 							// Track the number of failed repetitions.
 							failedRepetitions += 1;
-							if (failedRepetitions > maxFailedRepetitions)
+							if (failedRepetitions > maxRepetitions)
 							{
 								Debug.LogError("Failed to set random tiles after 100 attempts.");
 								return;
@@ -846,39 +1026,127 @@ namespace Environment
 		/// <summary>
 		/// Sets the overlay on the tile at the given coordinates.
 		/// </summary>
-		/// <param name="x">The X-coordinate of the tile.</param>
-		/// <param name="y">The Y-coordinate of the tile.</param>
+		/// <param name="coordinates">The (X,Y) grid-coordinates of the tile to set the overlay of.</param>
 		/// <param name="overlayType">The overlay type to set on the tile.</param>
-		public void SetTileOverlay(uint x, uint y, TileInstance.OverlayType overlayType)
+		/// <param name="instanceTiles">The map holding the tile.</param>
+		public static void SetTileOverlay((uint, uint) coordinates, TileInstance.OverlayType overlayType, TileInstance[,] instanceTiles)
 		{
-			// Get the previous tile.
-			TileInstance tile = InstanceTiles[y, x];
+			// Unpack the coordinates.
+			(uint x, uint y) = coordinates;
+			// Get the tile.
+			TileInstance tile = instanceTiles[y, x];
 			// Update the tile's overlay type.
 			tile.Overlay = overlayType;
-			// Re-save the tile to the map.
-			InstanceTiles[y, x].Set(tile);
+			// Reassign the tile.
+			instanceTiles[y, x] = tile;
 		}
 		/// <summary>
 		/// Sets the underlay (background) on the tile at the given coordinates.
 		/// </summary>
-		/// <param name="x">The X-coordinate of the tile.</param>
-		/// <param name="y">The Y-coordinate of the tile.</param>
+		/// <param name="coordinates">The (X,Y) grid-coordinates of the tile to set the overlay of.</param>
 		/// <param name="underlayType">The underlay (background) type to set on the tile.</param>
-		public void SetTileUnderlay(uint x, uint y, TileInstance.UnderlayType underlayType)
+		/// <param name="instanceTiles">The map holding the tile.</param>
+		public static void SetTileUnderlay((uint, uint) coordinates, TileInstance.UnderlayType underlayType, TileInstance[,] instanceTiles)
 		{
-			// Get the previous tile.
-			TileInstance tile = InstanceTiles[y, x];
+			// Unpack the coordinates.
+			(uint x, uint y) = coordinates;
+			// Get the tile.
+			TileInstance tile = instanceTiles[y, x];
 			// Update the tile's underlay type.
 			tile.Underlay = underlayType;
-			// Re-save the tile to the map.
-			InstanceTiles[y, x].Set(tile);
+			// Reassign the tile.
+			instanceTiles[y, x] = tile;
 		}
+		/// <summary>
+		/// Breaks the tile at the given location- setting it to air, making particles, and playing a sound.
+		/// </summary>
+		/// <param name="coordinates">The (X,Y) grid-coordinates of the tile to break.</param>
+		/// <returns>The tile that was broken.</returns>
+		public TileInstance BreakTile((uint, uint) coordinates)
+		{
+			// Unpack the coordinates.
+			(uint x, uint y) = coordinates;
+			// Get the tile at the given coordinates.
+			TileInstance tile = _instanceTiles[y, x];
+			
+			// Check if the tile is already air.
+			if (tile.TypeID == 0)
+			{
+				return tile;
+			}
+			
+			// Set the tile to air in the map.
+			_instanceTiles[y, x].Set(tile);
+			// Play the break sound.
+			//AudioManager.PlaySound("Break", ); // Todo: Play sound in world
+			// Create the break particles.
+			//ParticleManager.CreateParticles("Break", GetWorldCoordinates((x, y)));
 
+			return tile;
+		}
+		
+		
+		// METHODS - MATH
+		/// <summary>
+		/// Clamps and de-crosses the given padding.
+		/// </summary>
+		/// <param name="padding">The padding to clamp and de-cross.</param>
+		public static void ClampPadding(ref Vector4 padding)
+		{
+			// Clamp the padding to [0,1].
+			padding.x = Mathf.Clamp01(padding.x);
+			padding.y = Mathf.Clamp01(padding.y);
+			padding.z = Mathf.Clamp01(padding.z);
+			padding.w = Mathf.Clamp01(padding.w);
+			// Clamp the padding to not cross itself.
+			padding.x = Mathf.Min(padding.x, padding.y);
+			padding.y = Mathf.Max(padding.x, padding.y);
+			padding.z = Mathf.Min(padding.z, padding.w);
+			padding.w = Mathf.Max(padding.z, padding.w);
+		}
+		/// <summary>
+		/// Computes and returns the calculated limits from the given maximums and paddings.
+		/// </summary>
+		/// <param name="padding">The amount to pad each direction (where X:Left, Y:Right, Y:Bottom, W:Top).</param>
+		/// <param name="maximums">The maximum X (left/right) and Y (top/bottom) values.</param>
+		/// <returns>The limits from the given maximums and padding, (where X:Left, Y:Right, Y:Bottom, W:Top)</returns>
+		public static (uint, uint, uint, uint) ApplyPadding(Vector4 padding, Vector2 maximums)
+		{
+			// Compute the limits.
+			uint left = (uint)(padding.x * maximums.x);
+			uint right = (uint)(padding.y * maximums.x);
+			uint bottom = (uint)(padding.z * maximums.y);
+			uint top = (uint)(padding.w * maximums.y);
+			
+			// Return normally if the padding is not overlapping itself.
+			if (left != right)
+				return (left, right, bottom, top);
+			
+			// Fix padding sitting on itself.
+			if (left == 0)
+			{
+				right += 1;
+			}
+			else
+			{
+				left -= 1;
+			}
+			return (left, right, bottom, top);
+		}
+		
 		
 		// METHODS - UNITY
 		private void Start()
 		{
-			ConfigureMap(30, 120);
+			// Set the singleton instance.
+			if (Instance != null && Instance != this)
+			{
+				Debug.LogError("Cannot have more than one Map script!");
+				return;
+			}
+			Instance = this;
+			
+			ConfigureMap(newMapDimensions: (30, 120), layerSize: 20, layerCount: 6);
 			ConfigureRenderTiles(25, 12);
 			GenerateMap();
 			MoveMap(Vector2.zero);
@@ -887,16 +1155,17 @@ namespace Environment
 			Debug.Log($"Map size: {MapWidth}, {MapHeight}");
 		}
 
-		private static Camera _mainCamera;
-		private static bool _isPanning;
-		private static Vector2 _panPosition;
-		private bool _isDebugCameraMoveEnabled;
 		private void Update()
 		{
-			if (_isDebugCameraMoveEnabled)
+			if (isDebugCameraMoveEnabled)
 				DoDebugCameraMovement();
 		}
 
+		private static Camera _mainCamera;
+		private static bool _isPanning;
+		private static Vector2 _panPosition;
+		[SerializeField]
+		private bool isDebugCameraMoveEnabled;
 		private void DoDebugCameraMovement()
 		{
 			if (Input.GetKeyDown(KeyCode.Mouse0))

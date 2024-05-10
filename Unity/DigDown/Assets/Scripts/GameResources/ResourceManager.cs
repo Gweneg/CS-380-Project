@@ -8,6 +8,41 @@ using UnityEngine.Serialization;
 namespace GameResources
 {
 	/// <summary>
+	/// The unique name/ID of the sprite.
+	/// </summary>
+	public enum SpriteName : ushort
+	{
+		None,
+		GrassToDirt,
+		Dirt,
+		DirtToDirter,
+		Dirter,
+		DirterToDirtest,
+		Dirtest,
+		DirtestToStone,
+		Stone,
+		MoltenRock,
+		Lava,
+		Void,
+		IronOreOverlay,
+		CopperOreOverlay,
+		SilverOreOverlay,
+		GoldOreOverlay,
+		DiamondOreOverlay,
+		AzuriteOreOverlay,
+		CloudOneOverlay,
+		CloudTwoOverlay,
+		CloudThreeOverlay,
+		SkyBackground,
+		DirtBackground,
+		DirterBackground,
+		DirtestBackground,
+		StoneBackground,
+		DeepStoneBackground,
+		LavaBackground
+	}
+
+	/// <summary>
 	///	Loads and holds references to all art and sound assets that require swapping at run-time (e.g. tile pooling).
 	/// </summary>
 	public class ResourceManager : MonoBehaviour
@@ -22,7 +57,7 @@ namespace GameResources
 		[Serializable]
 		private struct SpriteDictionaryPair
 		{
-			public int id;
+			public SpriteName id;
 			public Sprite sprite;
 		}
 		[SerializeField]
@@ -31,18 +66,18 @@ namespace GameResources
 		/// <summary>
 		/// All loaded sprites, arranged in order of arbitrary TextureID.
 		/// </summary>
-		private Dictionary<int, Sprite> sprites;
+		private Dictionary<SpriteName, Sprite> _sprites;
 
 		/// <summary>
 		/// Gets and returns the sprite with the given ID.
 		/// </summary>
 		/// <param name="id">The ID of the sprite to get.</param>
 		/// <returns>The sprite of given ID.</returns>
-		public static Sprite GetSprite(ushort id)
+		public static Sprite GetSprite(SpriteName id)
 		{
-			if (!Instance.sprites.ContainsKey(id)) throw new ArgumentOutOfRangeException();
+			if (!Instance._sprites.ContainsKey(id)) throw new ArgumentOutOfRangeException();
 			
-			return Instance.sprites[id];
+			return Instance._sprites[id];
 		}
 
 		private void Awake()
@@ -53,7 +88,7 @@ namespace GameResources
 				Instance = this;
 				
 				// Convert the serialized values to be the dictionary.
-				sprites = spritesInit.ToDictionary(entry => entry.id, entry => entry.sprite);
+				_sprites = spritesInit.ToDictionary(entry => entry.id, entry => entry.sprite);
 			}
 			else
 			{

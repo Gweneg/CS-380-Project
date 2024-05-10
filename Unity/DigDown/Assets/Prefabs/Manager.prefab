@@ -114,3 +114,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 100de795e87874740b7f517674829bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  generationCaveLength: 15
+  generationCaveHeight: 4
+  generationCaveCount: 6
+  generationMapWidth: 30
+  generationMapHeight: 120
+  generationLayerCount: 6
+  generationLayerSize: 20
+  isDebugCameraMoveEnabled: 1

@@ -1,18 +1,42 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using GameResources;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Environment
 {
+	/// <summary>
+	/// The name/ID of this tile type.
+	/// </summary>
+	public enum TileTypeName : ushort
+	{
+		Air = 0,
+		GrassToDirt = 1,
+		Dirt = 2,
+		DirtToDirter = 3,
+		Dirter = 4,
+		DirterToDirtest = 5,
+		Dirtest = 6,
+		DirtestToStone = 7,
+		Stone = 8,
+		MoltenRock = 9,
+		Lava = 10,
+		Void = 11,
+		IronOre = 12,
+		CopperOre = 13,
+		SilverOre = 14,
+		GoldOre = 15,
+		DiamondOre = 16,
+		AzuriteOre = 17,
+		Cloud = 18,
+	}
+	
 	/// <summary>
 	/// A container of a tile's fixed/characteristic information.
 	/// </summary>
 	[Serializable]
 	public struct TileType
 	{
-		public TileType(ushort typeID, ushort spriteID, byte durabilityMax, byte durabilityHardness, bool isSolid)
+		public TileType(TileTypeName typeID, SpriteName spriteID, byte durabilityMax, byte durabilityHardness, bool isSolid)
 		{
 			this.typeID = typeID;
 			this.spriteID = spriteID;
@@ -22,14 +46,14 @@ namespace Environment
 		}
 		
 		/// <summary>
-		/// The unique ID of this tile type.
+		/// The name/ID of this tile type.
 		/// </summary>
-		public ushort typeID;
+		public TileTypeName typeID;
 		
 		/// <summary>
 		/// The ID of the tile's texture.
 		/// </summary>
-		public ushort spriteID;
+		public SpriteName spriteID;
 		
 		/// <summary>
 		/// The maximum/initial tile durability (health).
@@ -57,10 +81,10 @@ namespace Environment
 		/// <param name="type">The type to initialize this type to.</param>
 		public TileInstance(TileType type)
 		{
-			this.TypeID = type.typeID;
-			this.IsSolid = type.isSolid;
-			this.Overlay = 0;
-			this.Underlay = 0;
+			TypeID = type.typeID; //type.typeID;
+			IsSolid = type.isSolid;
+			Overlay = 0;
+			Underlay = 0;
 		}
 		/// <summary>
 		/// Creates a tile instance using the given instance.
@@ -74,7 +98,7 @@ namespace Environment
 		/// <summary>
 		/// The type-ID of this tile; used for looking up the immutable data of the tile.
 		/// </summary>
-		public ushort TypeID;
+		public TileTypeName TypeID;
 		
 		/// <summary>
 		/// Whether this tile is solid or not (can be passed through).
