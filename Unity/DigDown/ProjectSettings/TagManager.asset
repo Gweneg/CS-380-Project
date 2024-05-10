@@ -3,21 +3,27 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ground
+  - Weapon
+  - Shotgun
+  - Enemy
+  - floorShotgun
+  - Citizen
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - 
   - 
   - 
+  - ChildCollider
+  - ParentCollider
   - 
-  - 
-  - 
-  - 
+  - terrain
   - 
   - 
   - 
@@ -43,4 +49,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Holdable Items
+    uniqueID: 1653176009
     locked: 0
