@@ -62,6 +62,7 @@ public class enemyAi : MonoBehaviour
         enemyBoxCol = GetComponent<BoxCollider2D>();
 
         player = GameObject.FindGameObjectWithTag("Player"); //- original was "player
+        aPA = player.GetComponent<PlayerAttack>();
         rb = GetComponent<Rigidbody2D>();
         groundLayer = LayerMask.GetMask("Ground");
         //obstacle = GameObject.FindGameObjectWithTag("obstacle");

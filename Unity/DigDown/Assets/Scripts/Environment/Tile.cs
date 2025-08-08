@@ -189,6 +189,7 @@ namespace Environment
 			Transform localTransform = transform;
 			// Update the size/scale of the transform.
 			localTransform.position = new Vector3(position.x, position.y, localTransform.position.z);
+			renderer.material = Map.Instance.noFlickerMaterial;
 			// Update the sprite.
 			renderer.sprite = sprite;
 			// Update the overlay sprite.
@@ -198,7 +199,7 @@ namespace Environment
 			// Update the collider.
 			collider.enabled = isSolid;
 		}
-
+		
 		private void Awake()
 		{
 			renderer = GetComponent<SpriteRenderer>();

@@ -10,6 +10,8 @@ TagManager:
   - Enemy
   - floorShotgun
   - Citizen
+  - obstacle
+  - enemy
   layers:
   - Default
   - TransparentFX
@@ -18,8 +20,8 @@ TagManager:
   - Water
   - UI
   - 
-  - 
-  - 
+  - Ground
+  - Obstacle
   - ChildCollider
   - ParentCollider
   - 

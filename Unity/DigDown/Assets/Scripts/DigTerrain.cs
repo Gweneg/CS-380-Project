@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Environment;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.Il2Cpp;
@@ -56,8 +57,10 @@ public class DigTerrain : MonoBehaviour
         coolDownTimer = 0;
         foreach(Collider2D terrain in dugTerrain){
             Debug.Log("We dug " + terrain.name);
-            block = GameObject.Find(terrain.name);
-            Destroy(block);
+            //block = GameObject.Find(terrain.name);
+            //Destroy(block);
+
+            Map.Instance.BreakTile(Map.GetTileCoordinates(terrain.transform.position));
         }
     }
     void OnDrawGizmosSelected()

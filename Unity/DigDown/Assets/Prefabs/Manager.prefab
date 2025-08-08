@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4778039386366611637}
-  - component: {fileID: 4842116600804943545}
   - component: {fileID: 7672293397219664755}
+  - component: {fileID: 8968239378941944263}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4842116600804943545
+--- !u!114 &7672293397219664755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,7 +42,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 8646946369034367123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16c0a2d85e21f6c49a3c33a4221a9828, type: 3}
+  m_Script: {fileID: 11500000, guid: 100de795e87874740b7f517674829bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generationCaveLength: 15
+  generationCaveHeight: 4
+  generationCaveCount: 6
+  generationMapWidth: 30
+  generationMapHeight: 120
+  generationLayerCount: 6
+  generationLayerSize: 20
+  noFlickerMaterial: {fileID: 2100000, guid: d6892ad029ac21f429cacbf900524a2d, type: 2}
+  isDebugCameraMoveEnabled: 0
+--- !u!114 &8968239378941944263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8646946369034367123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b6f6c2893163174f97fb704dc7b5374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spritesInit:
@@ -60,8 +81,6 @@ MonoBehaviour:
     sprite: {fileID: 95684361, guid: ed560fcdd8f30d54796b5db9bf117b57, type: 3}
   - id: 6
     sprite: {fileID: 232773315, guid: ed560fcdd8f30d54796b5db9bf117b57, type: 3}
-  - id: 7
-    sprite: {fileID: -1102428478, guid: ed560fcdd8f30d54796b5db9bf117b57, type: 3}
   - id: 8
     sprite: {fileID: 972332768, guid: ed560fcdd8f30d54796b5db9bf117b57, type: 3}
   - id: 9
@@ -95,30 +114,10 @@ MonoBehaviour:
   - id: 23
     sprite: {fileID: 1918789254, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
   - id: 24
-    sprite: {fileID: -2052218745, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
+    sprite: {fileID: 1918789254, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
   - id: 25
     sprite: {fileID: 812999236, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
   - id: 26
     sprite: {fileID: -895627796, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
   - id: 27
     sprite: {fileID: 20991619, guid: 36a686b20e9e6d34cb4ea421f20f29f6, type: 3}
---- !u!114 &7672293397219664755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8646946369034367123}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 100de795e87874740b7f517674829bb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  generationCaveLength: 15
-  generationCaveHeight: 4
-  generationCaveCount: 6
-  generationMapWidth: 30
-  generationMapHeight: 120
-  generationLayerCount: 6
-  generationLayerSize: 20
-  isDebugCameraMoveEnabled: 1

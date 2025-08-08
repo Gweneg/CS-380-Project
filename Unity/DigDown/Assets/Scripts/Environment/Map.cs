@@ -8,6 +8,7 @@ using Vector2 = UnityEngine.Vector2;
 using EditorScripts;
 using Unity.Collections;
 using UnityEngine.Serialization;
+using GameObject = UnityEngine.GameObject;
 
 namespace Environment
 {
@@ -168,6 +169,8 @@ namespace Environment
 		/// <remarks>If the total size of the layers (layerCount * layerSize) is greater than the map size, it will be truncated.
 		/// If it is smaller, the last layer will be stretched.</remarks>
 		public uint generationLayerSize = 20;
+
+		
 
 
 		// FIELDS - VIEWPORT
@@ -509,8 +512,8 @@ namespace Environment
 			               cavePadding: cavePadding);
 			
 			// Generate ores.
-			Vector4 commonOrePadding = new Vector4(0, 1, 0.5f, 0.85f);
-			Vector4 uncommonOrePadding = new Vector4(0, 1, 0.15f, 0.65f);
+			Vector4 commonOrePadding = new Vector4(0, 1, 0.1f, 0.65f);
+			Vector4 uncommonOrePadding = new Vector4(0, 1, 0.15f, 0.55f);
 			Vector4 rareOrePadding = new Vector4(0, 1, 0f, 0.25f);
 			_GenerateOres(mapSize: mapSize,
 			              mapInstanceTiles: instanceTiles,
@@ -569,6 +572,7 @@ namespace Environment
 				}
 			}
 		}
+		public static List<Vector3> enemySpawnLocation = new();
 		private static void _GenerateCaves((uint, uint) mapSize, 
 		                                   TileInstance[,] mapInstanceTiles,
 		                                   IReadOnlyDictionary<TileTypeName, TileInstance> tileInstanceCache,
@@ -620,6 +624,11 @@ namespace Environment
 				{
 					for (uint column = 0; column < caveLength; column++)
 					{
+						// Todo: Hacky
+						if (row % 3 == 0 && column == 1)
+						{
+							enemySpawnLocation.Add(GetWorldCoordinates((row + startRow, column + startColumn)));
+						}
 						// Store the tile's background type before changing it.
 						TileInstance.UnderlayType underlayType = mapInstanceTiles[row + startRow, column + startColumn].Underlay;
 						// Create an air tile.
@@ -758,6 +767,8 @@ namespace Environment
 										localScale = new Vector3(TileSize, TileSize, TileSize)
 									}
 								};
+								newInstanceTile.layer = LayerMask.NameToLayer("Ground");
+								newInstanceTile.tag = "Ground";
 								
 								// Create the tile sprite overlay.
 								GameObject newInstanceTileOverlay = new GameObject(name: "Tile Sprite Overlay")
@@ -784,6 +795,7 @@ namespace Environment
 								};
 								SpriteRenderer spriteUnderlayRenderer = newInstanceTileUnderlay.AddComponent<SpriteRenderer>();
 								spriteUnderlayRenderer.sortingOrder = -1;
+								
 								
 								// Add the tile component to the GameObject. Note: Hacky workaround to making the Awake() not brick itself.
 								newInstanceTile.AddComponent<TileObject>();
@@ -1136,6 +1148,8 @@ namespace Environment
 		
 		
 		// METHODS - UNITY
+		public static PlayerAttack playerAttack;
+		public static Transform playerTransform;
 		private void Start()
 		{
 			// Set the singleton instance.
@@ -1151,6 +1165,29 @@ namespace Environment
 			GenerateMap();
 			MoveMap(Vector2.zero);
 			RerenderObjectTiles();
+			
+			// Move the player to the top of the map
+			GameObject player = GameObject.Find("New Dwarf");
+			player.transform.position = GetWorldCoordinates((MapWidth - 5, MapHeight - 5));
+			playerAttack = player.GetComponent<PlayerAttack>();
+			playerTransform = player.transform;
+
+			ItemPickup playerItemPickup = player.GetComponent<ItemPickup>();
+			
+			GameObject pickaxe = GameObject.Find("Pickaxe");
+			pickaxe.GetComponent<ifPickaxeCollidePlayer>().aIP = playerItemPickup;
+			pickaxe.transform.position = GetWorldCoordinates((MapWidth - 14, MapHeight - 15));
+			
+			GameObject gun = GameObject.Find("Shotgun4");
+			gun.GetComponent<ifCollidePlayer>().aIP = playerItemPickup;
+			gun.transform.position = GetWorldCoordinates((MapWidth - 8, MapHeight - 15));
+
+			// Move two enemies
+			foreach (GameObject ghostObject in GameObject.FindGameObjectsWithTag("Enemy"))
+			{
+				ghostObject.transform.position -= new Vector3(2, 0);
+			}
+			
 
 			Debug.Log($"Map size: {MapWidth}, {MapHeight}");
 		}
@@ -1161,6 +1198,7 @@ namespace Environment
 				DoDebugCameraMovement();
 		}
 
+		public Material noFlickerMaterial;
 		private static Camera _mainCamera;
 		private static bool _isPanning;
 		private static Vector2 _panPosition;
@@ -1187,7 +1225,7 @@ namespace Environment
 				
 				// Compute the bounds of the map.
 				Vector2 bottomleftCorner = GetWorldCoordinates((0, 0));
-				Vector2 toprightCorner = GetWorldCoordinates((MapWidth - 1, MapHeight - 1));
+				Vector2 toprightCorner = GetWorldCoordinates((MapWidth - 18, MapHeight - 1));
 				
 				// Clamp the new position to within the bounds of the map.
 				Vector3 clampedPosition = new Vector3(x: Math.Clamp(newPositionBLCorner.x, bottomleftCorner.x, toprightCorner.x), 
